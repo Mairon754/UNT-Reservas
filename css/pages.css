@@ -1,0 +1,228 @@
+/* Estilos específicos para las páginas */
+
+/* Estilo para la página de Recursos */
+.recursos-page {
+    padding: 30px;
+    background-color: #f9f9f9;
+}
+
+.recursos-page h2 {
+    color: #003366;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.recursos-page form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.recursos-page form label {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.recursos-page form input,
+.recursos-page form select,
+.recursos-page form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.recursos-page form button {
+    padding: 12px 20px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.recursos-page form button:hover {
+    background-color: #0055cc;
+}
+
+.recursos-page table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+.recursos-page table th, 
+.recursos-page table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.recursos-page table th {
+    background-color: #003366;
+    color: white;
+}
+
+.recursos-page table a {
+    color: #003366;
+    text-decoration: none;
+}
+
+.recursos-page table a:hover {
+    color: #0055cc;
+}
+
+/* Estilo para la página de Reservas */
+.reservas-page {
+    padding: 30px;
+    background-color: #f4f7fb;
+}
+
+.reservas-page h2 {
+    color: #003366;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.reservas-page form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.reservas-page form label {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.reservas-page form input,
+.reservas-page form select,
+.reservas-page form button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.reservas-page form button {
+    background-color: #003366;
+    color: white;
+    cursor: pointer;
+}
+
+.reservas-page form button:hover {
+    background-color: #0055cc;
+}
+
+.reservas-page table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+.reservas-page table th, 
+.reservas-page table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.reservas-page table th {
+    background-color: #003366;
+    color: white;
+}
+
+.reservas-page table a {
+    color: #003366;
+    text-decoration: none;
+}
+
+.reservas-page table a:hover {
+    color: #0055cc;
+}
+
+/* Estilo para la página de Mantenimiento */
+.mantenimiento-page {
+    padding: 30px;
+    background-color: #f9f9f9;
+}
+
+.mantenimiento-page h2 {
+    color: #003366;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.mantenimiento-page form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.mantenimiento-page form label {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.mantenimiento-page form input,
+.mantenimiento-page form select,
+.mantenimiento-page form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.mantenimiento-page form button {
+    padding: 12px 20px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.mantenimiento-page form button:hover {
+    background-color: #0055cc;
+}
+
+.mantenimiento-page table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+.mantenimiento-page table th, 
+.mantenimiento-page table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.mantenimiento-page table th {
+    background-color: #003366;
+    color: white;
+}
+
+.mantenimiento-page table a {
+    color: #003366;
+    text-decoration: none;
+}
+
+.mantenimiento-page table a:hover {
+    color: #0055cc;
+}
