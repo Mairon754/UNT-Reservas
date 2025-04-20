@@ -1,26 +1,536 @@
-<!-- navbar.php: Barra de navegación global -->
+<?php
+session_start();
+
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+// Obtener datos del usuario
+$userName = $_SESSION['name'] ?? 'Usuario';
+$userEmail = $_SESSION['email'] ?? '';
+$isAdmin = ($userEmail === 'mairon@gmail.com');
+
+// Determinar la ruta base para los enlaces
+$basePath = '';
+if (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) {
+    $basePath = '.';
+} else {
+    $basePath = './pages';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - UNTGestión</title>
-    <link rel="stylesheet" href="../css/styles.css">
-</head>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <style>
+        /* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fb;
+    color: #333;
+    margin: 0;
+}
 
+header {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo img {
+    height: 40px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main {
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #003366;
+}
+
+/* Estilos para el Dashboard */
+.dashboard-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #003366;
+}
+
+.stat-card p {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Estilos para la gestión de recursos */
+.resource-cards, .maintenance-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.resource-card, .maintenance-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.resource-card h3, .maintenance-card h3 {
+    font-size: 1.2rem;
+    color: #003366;
+}
+
+.resource-card p, .maintenance-card p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Estilos para el listado de recursos y mantenimiento */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #003366;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    color: #003366;
+}
+
+a:hover {
+    color: #0055cc;
+}
+
+button {
+    padding: 10px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0055cc;
+}
+
+/* Formulario */
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+input[type="text"], input[type="date"], input[type="time"], select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Estilos para la página de Dashboard */
+.dashboard-stats {
+    margin-top: 40px;
+}
+
+.resources {
+    margin-top: 40px;
+}
+
+.upcoming-reservations, .maintenance {
+    margin-top: 40px;
+}
+
+/* Estilos para la página de Recursos */
+h3 {
+    margin-bottom: 20px;
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 40px;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
+
+/* Responsividad para dispositivos pequeños */
+@media (max-width: 768px) {
+    .stat-card, .resource-card, .maintenance-card {
+        width: 48%;
+    }
+
+    nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-stats {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilo global del dashboard */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Cada cuadro dentro del dashboard */
+.dashboard-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Navbar mejorado */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003366;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+}
+
+/* Perfil de usuario en la navbar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-info span {
+    font-size: 14px;
+}
+
+.user-info a {
+    color: #ff9800;
+    text-decoration: none;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+/* Títulos dentro de los cuadros */
+.dashboard-item h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Números o valores dentro de los cuadros */
+.dashboard-item p {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4CAF50;  /* Un verde similar al que aparece en la imagen */
+    margin: 0;
+}
+
+/* Estilos para los cuadros de "Recursos por Tipo" */
+.dashboard-item.resources {
+    background-color: #d1e7dd;  /* Color para los recursos disponibles */
+    border-left: 10px solid #28a745; /* Línea de color verde al lado */
+}
+
+/* Cuadros con alertas de tipo "mantenimiento" o "problema" */
+.dashboard-item.alert {
+    background-color: #ffecb3;  /* Amarillo para mostrar alertas */
+    border-left: 10px solid #f39c12;  /* Línea de color amarillo fuerte */
+}
+
+/* Cuadros con alertas de tipo "problema crítico" */
+.dashboard-item.critical {
+    background-color: #f8d7da;  /* Fondo rojo pálido */
+    border-left: 10px solid #dc3545;  /* Línea roja al lado */
+}
+
+/* Estilo para la parte de "Recursos por Tipo", más específico */
+.dashboard-item .resource-type {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Para los botones dentro del dashboard */
+.dashboard-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* Cambiar color de los botones cuando se pasa el mouse */
+.dashboard-item button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos específicos para la sección de "Próximas Reservas" */
+.dashboard-item.upcoming-reservations {
+    width: 100%;
+}
+
+/* Estilos para las tarjetas de mantenimiento */
+.dashboard-item .maintenance-card {
+    font-size: 14px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilos para las tarjetas de mantenimiento con diferentes prioridades */
+.dashboard-item .maintenance-card.high-priority {
+    background-color: #f8d7da;
+    border-left: 5px solid #dc3545;
+}
+
+.dashboard-item .maintenance-card.medium-priority {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+}
+
+.dashboard-item .maintenance-card.low-priority {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+}
+
+.dashboard-item .maintenance-card h3 {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.dashboard-item .maintenance-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+        /* Estilos para la barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #003366;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(12, 58, 241, 0.76);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #555;
+        }
+
+        /* Perfil de usuario en la navbar */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color:rgb(232, 72, 9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-info span {
+            font-size: 14px;
+        }
+
+        .user-info a {
+            color:rgb(11, 239, 22);
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .user-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="../ass/logoUNT.webp" alt="Logo UNTGestión">
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="<?= $basePath ?>/dashboard.php">Dashboard</a>
+            <?php if ($isAdmin): ?>
+            <a href="<?= $basePath ?>/recursos.php">Recursos</a>
+            <?php endif; ?>
+            <a href="<?= $basePath ?>/reservas.php">Reservas</a>
+            <a href="<?= $basePath ?>/maintenimiento.php">Mantenimiento</a>
         </div>
-        <nav>
-            <ul>
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="recursos.php">Recursos</a></li>
-                <li><a href="reservas.php">Reservas</a></li>
-                <li><a href="mantenimiento.php">Mantenimiento</a></li>
-            </ul>
-        </nav>
-    </header>
+        <div class="user-profile">
+            <div class="user-avatar">
+                <span><?= substr($userName, 0, 1) ?></span>
+            </div>
+            <div class="user-info">
+                <span>Bienvenido, <?php echo $userName; ?>!</span>
+                <a href="<?= $basePath ?>/logout.php">Cerrar sesión</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

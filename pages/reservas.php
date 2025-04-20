@@ -3,6 +3,7 @@
 include '../navbar.php';  // Subir un directorio para acceder a navbar.php
 require_once '../db/db.php';  // Subir un directorio para acceder a db.php
 
+
 // Lógica de eliminación de una reserva
 if (isset($_GET['delete_id'])) {
     include '../server/reservation/deleteReservation.php'; // Eliminar reserva

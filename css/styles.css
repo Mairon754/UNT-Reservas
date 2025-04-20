@@ -222,71 +222,192 @@ footer p {
     }
 }
 
-/* Estilos para la barra de navegación */
-nav {
-    background-color: #003366;  /* Color de fondo institucional */
-    padding: 15px 0;
+/* Estilo global del dashboard */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.navbar-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+/* Cada cuadro dentro del dashboard */
+.dashboard-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Navbar mejorado */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.navbar-container .logo img {
-    height: 40px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-links {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
     display: flex;
-}
-
-.nav-links li {
-    margin-right: 20px;
+    gap: 20px;
 }
 
 .nav-links a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-    padding: 10px 15px;
-    display: block;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 .nav-links a:hover {
-    background-color: #0055cc;
-    border-radius: 4px;
+    background-color: #555;
 }
 
-/* Responsividad para dispositivos móviles */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
+/* Perfil de usuario en la navbar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-    nav {
-        padding: 10px 0;
-    }
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
 
-    .navbar-container {
-        display: block;
-        text-align: center;
-    }
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
 
-    .nav-links.show {
-        display: block;
-        margin-top: 15px;
-    }
+.user-info span {
+    font-size: 14px;
+}
 
-    .nav-links li {
-        margin: 10px 0;
-    }
+.user-info a {
+    color: #ff9800;
+    text-decoration: none;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+/* Títulos dentro de los cuadros */
+.dashboard-item h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Números o valores dentro de los cuadros */
+.dashboard-item p {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4CAF50;  /* Un verde similar al que aparece en la imagen */
+    margin: 0;
+}
+
+/* Estilos para los cuadros de "Recursos por Tipo" */
+.dashboard-item.resources {
+    background-color: #d1e7dd;  /* Color para los recursos disponibles */
+    border-left: 10px solid #28a745; /* Línea de color verde al lado */
+}
+
+/* Cuadros con alertas de tipo "mantenimiento" o "problema" */
+.dashboard-item.alert {
+    background-color: #ffecb3;  /* Amarillo para mostrar alertas */
+    border-left: 10px solid #f39c12;  /* Línea de color amarillo fuerte */
+}
+
+/* Cuadros con alertas de tipo "problema crítico" */
+.dashboard-item.critical {
+    background-color: #f8d7da;  /* Fondo rojo pálido */
+    border-left: 10px solid #dc3545;  /* Línea roja al lado */
+}
+
+/* Estilo para la parte de "Recursos por Tipo", más específico */
+.dashboard-item .resource-type {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Para los botones dentro del dashboard */
+.dashboard-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* Cambiar color de los botones cuando se pasa el mouse */
+.dashboard-item button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos específicos para la sección de "Próximas Reservas" */
+.dashboard-item.upcoming-reservations {
+    width: 100%;
+}
+
+/* Estilos para las tarjetas de mantenimiento */
+.dashboard-item .maintenance-card {
+    font-size: 14px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilos para las tarjetas de mantenimiento con diferentes prioridades */
+.dashboard-item .maintenance-card.high-priority {
+    background-color: #f8d7da;
+    border-left: 5px solid #dc3545;
+}
+
+.dashboard-item .maintenance-card.medium-priority {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+}
+
+.dashboard-item .maintenance-card.low-priority {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+}
+
+.dashboard-item .maintenance-card h3 {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.dashboard-item .maintenance-card p {
+    font-size: 14px;
+    color: #555;
 }

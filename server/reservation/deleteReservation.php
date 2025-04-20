@@ -1,7 +1,8 @@
 <?php
 // deleteReservation.php: Eliminar una reserva
 
-require_once '../db/db.php';
+require_once __DIR__ . '/../../db/db.php';
+
 
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
@@ -18,7 +19,7 @@ if (isset($_GET['delete_id'])) {
         
         if ($result) {
             // Redirigir a la página de reservas para actualizar la lista
-            header("Location: ../pages/reservas.php?msg=deleted");
+            header("Location: /project-UNT-reservas/pages/reservas.php?msg=deleted");
         } else {
             // Mensaje de error si no se pudo eliminar
             header("Location: ../pages/reservas.php?error=delete_failed");
