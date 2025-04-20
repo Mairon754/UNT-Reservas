@@ -226,3 +226,20 @@
 .mantenimiento-page table a:hover {
     color: #0055cc;
 }
+
+/* Estilos específicos para la sección de "Próximas Reservas" */
+.dashboard-item .upcoming-reservations {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+.upcoming-reservations, .maintenance {
+    margin-top: 40px;
+}
+.dashboard-item.upcoming-reservations {
+    width: 100%;
+}
+.upcoming-reservations, .maintenance {
+    margin-top: 40px;
+}
