@@ -520,7 +520,7 @@ footer p {
             <a href="<?= $basePath ?>/recursos.php">Recursos</a>
             <?php endif; ?>
             <a href="<?= $basePath ?>/reservas.php">Reservas</a>
-            <a href="<?= $basePath ?>/maintenimiento.php">Mantenimiento</a>
+            <a href="<?= $basePath ?>/mantenimiento.php">Mantenimiento</a>
         </div>
         <div class="user-profile">
             <div class="user-avatar">
