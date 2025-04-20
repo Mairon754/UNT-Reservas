@@ -1,58 +1,54 @@
 <?php
-// editMaintenance.php: Editar una solicitud de mantenimiento existente
-
-require_once '../db/db.php';
+include '../../navbar.php';
+require_once '../../db/db.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
+    try {
+        $db = Database::connect();
+        $stmt = $db->prepare("SELECT * FROM maintenance_requests WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $request = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        die("Error al obtener mantenimiento: " . $e->getMessage());
+    }
 
-    // Obtener la solicitud de mantenimiento actual
-    $db = Database::connect();
-    $query = "SELECT * FROM maintenance_requests WHERE id = :id";
-    $stmt = $db->prepare($query);
-    $stmt->execute([':id' => $id]);
-    $maintenance = $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $description = $_POST['description'];
+        $status = $_POST['status'];
+        $priority = $_POST['priority'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $resource_id = $_POST['resource_id'];
-    $description = $_POST['description'];
-    $priority = $_POST['priority'];
-
-    // Actualizar la solicitud de mantenimiento
-    $query = "UPDATE maintenance_requests SET resource_id = :resource_id, description = :description, priority = :priority WHERE id = :id";
-    $stmt = $db->prepare($query);
-    $stmt->execute([
-        ':resource_id' => $resource_id,
-        ':description' => $description,
-        ':priority' => $priority,
-        ':id' => $id
-    ]);
-
-    echo "Mantenimiento actualizado con éxito!";
+        try {
+            $stmt = $db->prepare("UPDATE maintenance_requests SET description = :description, status = :status, priority = :priority WHERE id = :id");
+            $stmt->execute([
+                ':description' => $description,
+                ':status' => $status,
+                ':priority' => $priority,
+                ':id' => $id
+            ]);
+            header("Location: ../../pages/mantenimiento.php");
+        } catch (PDOException $e) {
+            die("Error al actualizar: " . $e->getMessage());
+        }
+    }
+} else {
+    die("ID inválido");
 }
 ?>
+<link rel="stylesheet" href="../../css/pages.css">
 
-<form action="editMaintenance.php?id=<?php echo $maintenance['id']; ?>" method="POST">
-    <label for="resource_id">Recurso:</label>
-    <select id="resource_id" name="resource_id">
-        <option value="1">Aula 101</option>
-        <option value="2">Proyector EPSON</option>
-        <option value="3">Laptop HP</option>
-    </select>
-    <br>
 
-    <label for="description">Descripción:</label>
-    <textarea id="description" name="description" required><?php echo $maintenance['description']; ?></textarea>
-    <br>
-
-    <label for="priority">Prioridad:</label>
-    <select id="priority" name="priority" required>
-        <option value="alta" <?php echo $maintenance['priority'] == 'alta' ? 'selected' : ''; ?>>Alta</option>
-        <option value="media" <?php echo $maintenance['priority'] == 'media' ? 'selected' : ''; ?>>Media</option>
-        <option value="baja" <?php echo $maintenance['priority'] == 'baja' ? 'selected' : ''; ?>>Baja</option>
-    </select>
-    <br>
-
-    <button type="submit">Actualizar Solicitud de Mantenimiento</button>
+<h2>Editar Solicitud de Mantenimiento</h2>
+<form method="POST">
+    <label>Descripción:</label>
+    <input type="text" name="description" value="<?= $request['description'] ?>" required><br>
+    <label>Estado:</label>
+    <input type="text" name="status" value="<?= $request['status'] ?>" required><br>
+    <label>Prioridad:</label>
+    <select name="priority">
+        <option value="baja" <?= $request['priority'] == 'baja' ? 'selected' : '' ?>>Baja</option>
+        <option value="media" <?= $request['priority'] == 'media' ? 'selected' : '' ?>>Media</option>
+        <option value="alta" <?= $request['priority'] == 'alta' ? 'selected' : '' ?>>Alta</option>
+    </select><br>
+    <button type="submit">Actualizar</button>
 </form>
