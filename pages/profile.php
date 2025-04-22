@@ -140,7 +140,7 @@ require_once '../navbar.php';
                     
                     <div class="form-actions">
                         <button type="submit" name="update_profile" class="btn btn-primary">Guardar cambios</button>
-                        <a href="../dashboard.php" class="btn btn-secondary">Volver al Dashboard</a>
+                        <a href="../pages/dashboard.php" class="btn btn-secondary">Volver al Dashboard</a>
                     </div>
                 </form>
             </div>
