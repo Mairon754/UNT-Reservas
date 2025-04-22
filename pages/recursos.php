@@ -19,7 +19,7 @@ try {
 ?>
 
 <h2>Gestión de Recursos</h2>
-<div id="responseMessage"></div>
+<div id="responseMessage" class="content"></div>
 <button id="addRowBtn" type="button">Agregar Fila</button>
 
 <table id="resourcesTable">

@@ -110,7 +110,7 @@
         font-weight: bold;
     }
 
-    /* Números o valores dentro de los cuadros */
+    /* Cambiar el tamaño de los números */
     .dashboard-item p {
         font-size: 28px;
         font-weight: 600;

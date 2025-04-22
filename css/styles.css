@@ -322,26 +322,26 @@ footer p {
 .dashboard-item p {
     font-size: 28px;
     font-weight: 600;
-    color: #4CAF50;  /* Un verde similar al que aparece en la imagen */
+    color: #4CAF50;
     margin: 0;
 }
 
 /* Estilos para los cuadros de "Recursos por Tipo" */
 .dashboard-item.resources {
-    background-color: #d1e7dd;  /* Color para los recursos disponibles */
-    border-left: 10px solid #28a745; /* Línea de color verde al lado */
+    background-color: #d1e7dd;
+    border-left: 10px solid #28a745;
 }
 
 /* Cuadros con alertas de tipo "mantenimiento" o "problema" */
 .dashboard-item.alert {
-    background-color: #ffecb3;  /* Amarillo para mostrar alertas */
-    border-left: 10px solid #f39c12;  /* Línea de color amarillo fuerte */
+    background-color: #ffecb3;
+    border-left: 10px solid #f39c12;
 }
 
 /* Cuadros con alertas de tipo "problema crítico" */
 .dashboard-item.critical {
-    background-color: #f8d7da;  /* Fondo rojo pálido */
-    border-left: 10px solid #dc3545;  /* Línea roja al lado */
+    background-color: #f8d7da;
+    border-left: 10px solid #dc3545;
 }
 
 /* Estilo para la parte de "Recursos por Tipo", más específico */
@@ -411,3 +411,30 @@ footer p {
     font-size: 14px;
     color: #555;
 }
+
+/* Media Query para pantallas de dispositivos móviles (menos de 600px) */
+@media (max-width: 600px) {
+    .dashboard-item {
+        width: 100%;
+    }
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+/* Estilos del pie de página */
+.footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Esto asegura que el footer se pegue al final */
+    width: 100%;
+}
+
+/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }}
+

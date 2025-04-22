@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 // Obtener datos del usuario
 $userName = $_SESSION['name'] ?? 'Usuario';
 $userEmail = $_SESSION['email'] ?? '';
+$userRole = $_SESSION['role'] ?? 'user';
 $isAdmin = ($userEmail === 'mairon@gmail.com');
 
 // Determinar la ruta base para los enlaces
@@ -18,6 +19,14 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) {
     $basePath = '.';
 } else {
     $basePath = './pages';
+
+if (!isset($userEmail)) {
+    $userEmail = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : '';
+}
+
+if (!isset($userRole)) {
+    $userRole = isset($_SESSION['user_role']) ? ucfirst($_SESSION['user_role']) : 'Usuario';
+}
 }
 ?>
 
@@ -26,8 +35,9 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/pages.css">
+    
+    
     <style>
         /* Estilos generales */
 body {
@@ -443,6 +453,12 @@ footer p {
     color: #555;
 }
 
+.logo-image {
+    width: 2px;  /* o el tamaño que desee */
+    height: auto;  /* mantiene la proporción */
+    }
+
+
         /* Estilos para la barra de navegación */
         .navbar {
             display: flex;
@@ -456,7 +472,9 @@ footer p {
 
         .nav-links {
             display: flex;
+            flex: 1; /* Esto hará que ocupe todo el espacio disponible */
             gap: 20px;
+            
         }
 
         .nav-links a {
@@ -493,7 +511,9 @@ footer p {
         .user-info {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
+            justify-content: space-between;
+            margin-right: 20px;
         }
 
         .user-info span {
@@ -509,12 +529,208 @@ footer p {
 
         .user-info a:hover {
             text-decoration: underline;
+
         }
+
+        .logo-image {
+            width:  75px;  /* o el tamaño que desee */
+            height: auto;  /* mantiene la proporción */
+            }
+        
+        .logo {
+            margin-right: 20px; /* Espacio entre logo y enlaces */
+        }
+        /* Estilos para el dropdown del usuario */
+.user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 200px;
+    z-index: 1000;
+    display: none; /* Inicialmente oculto */
+}
+
+.dropdown-menu.show {
+    display: block; /* Se muestra cuando tiene la clase 'show' */
+}
+
+.dropdown-header {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-header strong {
+    display: block;
+    font-size: 16px;
+    color: #333;
+}
+
+.dropdown-header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.user-role {
+    color: #3498db;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+
+}
+
+.user-welcome {
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+
+    /* Ajustes de la barra de navegación para dispositivos pequeños */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+}
+
+.navbar .user-info {
+    font-size: 14px;
+    margin-right: 20px;
+}
+
+/* Ajuste del avatar en pantallas pequeñas */
+.user-avatar {
+    background-color: #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Media Query para la barra de navegación en pantallas pequeñas */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column; /* Poner los elementos en columna */
+        align-items: center;
+    }
+
+    .navbar .user-info {
+        margin-bottom: 10px; /* Separar la información del usuario */
+    }
+
+    .user-avatar {
+        font-size: 18px; /* Aumentar el tamaño de la letra en el avatar */
+    }
+}
+/* Para dispositivos móviles */
+@media (max-width: 600px) {
+    .dashboard-item {
+        width: 100%;
+    }
+
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+/* Para tablets */
+@media (max-width: 1024px) {
+    .dashboard-item {
+        width: 48%;
+    }
+}
+/* Estilos del pie de página */
+.footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Esto asegura que el footer se pegue al final */
+    width: 100%;
+}
+
+/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }}
+
+
+
+
+}
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const avatarToggle = document.getElementById('avatar-dropdown-toggle');
+        const dropdownMenu = document.getElementById('user-dropdown-menu');
+        
+        // Mostrar/ocultar el menú al hacer clic en el avatar
+        avatarToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+        // Cerrar el menú si se hace clic fuera de él
+        document.addEventListener('click', function(e) {
+            if (!avatarToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    });
+    </script>
 </head>
 <body>
+
     <div class="navbar">
         <div class="nav-links">
+            <div class="logo">
+                <img src="../ass/logoUNT.png" class="logo-image">
+            </div>
             <a href="<?= $basePath ?>/dashboard.php">Dashboard</a>
             <?php if ($isAdmin): ?>
             <a href="<?= $basePath ?>/recursos.php">Recursos</a>
@@ -522,15 +738,32 @@ footer p {
             <a href="<?= $basePath ?>/reservas.php">Reservas</a>
             <a href="<?= $basePath ?>/mantenimiento.php">Mantenimiento</a>
         </div>
+        <br><br>
+        <div class="user-info">
+            <span class="user-welcome">Bienvenido, <?php echo $userName; ?>!</span>
+        </div>
+        <br><br>
         <div class="user-profile">
-            <div class="user-avatar">
+            <div class="user-avatar" id="avatar-dropdown-toggle">
                 <span><?= substr($userName, 0, 1) ?></span>
             </div>
-            <div class="user-info">
-                <span>Bienvenido, <?php echo $userName; ?>!</span>
+            <div class="dropdown-menu" id="user-dropdown-menu">
+                <div class="dropdown-header">
+                    <strong><?= htmlspecialchars($userName) ?></strong>
+                    <p><?= htmlspecialchars($userEmail) ?></p>
+                    <p class="user-role"><?= htmlspecialchars($userRole) ?></p>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="<?= $basePath ?>/profile.php">Mi Perfil</a>
+                <a href="<?= $basePath ?>/settings.php">Configuración</a>
                 <a href="<?= $basePath ?>/logout.php">Cerrar sesión</a>
             </div>
         </div>
+        </div>
     </div>
 </body>
+
+<footer class="footer">
+        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
+    </footer>
 </html>

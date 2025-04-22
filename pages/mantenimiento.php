@@ -38,7 +38,7 @@ try {
 
 <!-- Mostrar la tabla de mantenimiento -->
 <h3>Solicitudes Activas</h3>
-<div id="responseMessage"></div>
+<div id="responseMessage" class="content"></div>
 <form action="mantenimiento.php" method="POST" id="maintenanceForm">
     <table id="maintenanceTable">
         <thead>

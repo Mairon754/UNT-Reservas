@@ -61,3 +61,38 @@ button {
 button:hover {
     background-color: #0055cc;
 }
+
+/* Media Query para pantallas de dispositivos móviles (menos de 600px) */
+@media (max-width: 600px) {
+    .dashboard-item {
+        width: 100%;
+    }
+
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+/* Para tablets */
+@media (max-width: 1024px) {
+    .dashboard-item {
+        width: 48%;
+    }
+}
+
+/* Estilos del pie de página */
+.footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Esto asegura que el footer se pegue al final */
+    width: 100%;
+}
+
+/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }}
+

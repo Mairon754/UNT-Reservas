@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
-    <div class="login-container">
+    <div class="login-container" class="content">
         <h2>Iniciar Sesión</h2>
 
         <?php if ($error_message): ?>

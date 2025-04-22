@@ -36,6 +36,15 @@ try {
     $stmt = $db->query($queryUpcomingReservations);
     $upcomingReservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+    $queryRecentMaintenance = "SELECT m.id, r.name AS resource_name, m.description, m.status, m.priority, m.created_at 
+                         FROM maintenance_requests m
+                         JOIN resources r ON m.resource_id = r.id
+                         ORDER BY m.created_at DESC
+                         LIMIT 5";  // Limitar a los 5 mantenimientos más recientes
+$stmt = $db->query($queryRecentMaintenance);
+$recentMaintenance = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     echo "Error al conectar o ejecutar la consulta: " . $e->getMessage();
     die();
@@ -51,12 +60,13 @@ try {
     <title>Dashboard</title>
     <link rel="stylesheet" href="../css/pages.css">
     
+    
 
 </head>
 <body>
     <h2>Vista General del Sistema de Gestión de Recursos</h2>
 
-    <div class="dashboard">
+    <div class="dashboard" class="content">
         <!-- Total de Recursos -->
         <div class="dashboard-item">
             <h3>Total de Recursos</h3>
@@ -100,5 +110,20 @@ try {
             <p>No hay reservas próximas.</p>
         <?php endif; ?>
     </div>
+    <div class="maintenance">
+    <h2>Mantenimientos Recientes</h2>
+    <?php if (!empty($recentMaintenance)): ?>
+        <?php foreach ($recentMaintenance as $maintenance): ?>
+            <div class="maintenance-card">
+                <h3><?= htmlspecialchars($maintenance['resource_name']) ?></h3>
+                <p><?= htmlspecialchars($maintenance['description']) ?></p>
+                <p><strong>Estado:</strong> <?= htmlspecialchars($maintenance['status']) ?></p>
+                <p><strong>Prioridad:</strong> <?= htmlspecialchars($maintenance['priority']) ?></p>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay mantenimientos recientes registrados.</p>
+    <?php endif; ?>
+</div>
 </body>
 </html>

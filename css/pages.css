@@ -1,193 +1,138 @@
-/* Estilos específicos para las páginas */
-
-/* Estilo para la página de Recursos */
-.recursos-page {
-    padding: 30px;
-    background-color: #f9f9f9;
-}
-
-.recursos-page h2 {
-    color: #003366;
-    font-size: 2rem;
-    margin-bottom: 30px;
-}
-
-.recursos-page form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
-
-.recursos-page form label {
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.recursos-page form input,
-.recursos-page form select,
-.recursos-page form textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.recursos-page form button {
-    padding: 12px 20px;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.recursos-page form button:hover {
-    background-color: #0055cc;
-}
-
-.recursos-page table {
-    width: 100%;
-    margin-top: 30px;
-    border-collapse: collapse;
-}
-
-.recursos-page table th, 
-.recursos-page table td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-}
-
-.recursos-page table th {
-    background-color: #003366;
-    color: white;
-}
-
-.recursos-page table a {
-    color: #003366;
-    text-decoration: none;
-}
-
-.recursos-page table a:hover {
-    color: #0055cc;
-}
-
-/* Estilo para la página de Reservas */
-.reservas-page {
-    padding: 30px;
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
     background-color: #f4f7fb;
+    color: #333;
+    margin: 0;
 }
 
-.reservas-page h2 {
+header {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo img {
+    height: 40px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main {
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
     color: #003366;
-    font-size: 2rem;
-    margin-bottom: 30px;
 }
 
-.reservas-page form {
-    background-color: #fff;
+/* Estilos para el Dashboard */
+.dashboard-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
+    width: 22%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+    text-align: center;
 }
 
-.reservas-page form label {
+.stat-card h3 {
     font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #003366;
+}
+
+.stat-card p {
+    font-size: 1.5rem;
     color: #333;
 }
 
-.reservas-page form input,
-.reservas-page form select,
-.reservas-page form button {
+/* Estilos para la gestión de recursos */
+.resource-cards, .maintenance-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.resource-card, .maintenance-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.resource-card h3, .maintenance-card h3 {
+    font-size: 1.2rem;
+    color: #003366;
+}
+
+.resource-card p, .maintenance-card p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Estilos para el listado de recursos y mantenimiento */
+table {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.reservas-page form button {
-    background-color: #003366;
-    color: white;
-    cursor: pointer;
-}
-
-.reservas-page form button:hover {
-    background-color: #0055cc;
-}
-
-.reservas-page table {
-    width: 100%;
-    margin-top: 30px;
+    margin-top: 20px;
     border-collapse: collapse;
 }
 
-.reservas-page table th, 
-.reservas-page table td {
-    padding: 12px;
-    text-align: left;
+table, th, td {
     border: 1px solid #ddd;
 }
 
-.reservas-page table th {
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
     background-color: #003366;
     color: white;
 }
 
-.reservas-page table a {
-    color: #003366;
+a {
     text-decoration: none;
+    color: #003366;
 }
 
-.reservas-page table a:hover {
+a:hover {
     color: #0055cc;
 }
 
-/* Estilo para la página de Mantenimiento */
-.mantenimiento-page {
-    padding: 30px;
-    background-color: #f9f9f9;
-}
-
-.mantenimiento-page h2 {
-    color: #003366;
-    font-size: 2rem;
-    margin-bottom: 30px;
-}
-
-.mantenimiento-page form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
-
-.mantenimiento-page form label {
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.mantenimiento-page form input,
-.mantenimiento-page form select,
-.mantenimiento-page form textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.mantenimiento-page form button {
-    padding: 12px 20px;
+button {
+    padding: 10px;
     background-color: #003366;
     color: white;
     border: none;
@@ -196,50 +141,307 @@
     cursor: pointer;
 }
 
-.mantenimiento-page form button:hover {
+button:hover {
     background-color: #0055cc;
 }
 
-.mantenimiento-page table {
+/* Formulario */
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+input[type="text"], input[type="date"], input[type="time"], select, textarea {
     width: 100%;
-    margin-top: 30px;
-    border-collapse: collapse;
-}
-
-.mantenimiento-page table th, 
-.mantenimiento-page table td {
     padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
-.mantenimiento-page table th {
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Estilos para la página de Dashboard */
+.dashboard-stats {
+    margin-top: 40px;
+}
+
+.resources {
+    margin-top: 40px;
+}
+
+.upcoming-reservations, .maintenance {
+    margin-top: 40px;
+}
+
+/* Estilos para la página de Recursos */
+h3 {
+    margin-bottom: 20px;
+}
+
+/* Estilos para el pie de página */
+footer {
     background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 40px;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
+
+/* Responsividad para dispositivos pequeños */
+@media (max-width: 768px) {
+    .stat-card, .resource-card, .maintenance-card {
+        width: 48%;
+    }
+
+    nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-stats {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilo global del dashboard */
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Cada cuadro dentro del dashboard */
+.dashboard-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    width: 22%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Navbar mejorado */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003366;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(45, 10, 241, 0.1);
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+}
+
+/* Perfil de usuario en la navbar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
     color: white;
 }
 
-.mantenimiento-page table a {
-    color: #003366;
-    text-decoration: none;
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
-.mantenimiento-page table a:hover {
-    color: #0055cc;
+.user-info span {
+    font-size: 14px;
+}
+
+.user-info a {
+    color: #ff9800;
+    text-decoration: none;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+/* Títulos dentro de los cuadros */
+.dashboard-item h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Números o valores dentro de los cuadros */
+.dashboard-item p {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4CAF50;
+    margin: 0;
+}
+
+/* Estilos para los cuadros de "Recursos por Tipo" */
+.dashboard-item.resources {
+    background-color: #d1e7dd;
+    border-left: 10px solid #28a745;
+}
+
+/* Cuadros con alertas de tipo "mantenimiento" o "problema" */
+.dashboard-item.alert {
+    background-color: #ffecb3;
+    border-left: 10px solid #f39c12;
+}
+
+/* Cuadros con alertas de tipo "problema crítico" */
+.dashboard-item.critical {
+    background-color: #f8d7da;
+    border-left: 10px solid #dc3545;
+}
+
+/* Estilo para la parte de "Recursos por Tipo", más específico */
+.dashboard-item .resource-type {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Para los botones dentro del dashboard */
+.dashboard-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* Cambiar color de los botones cuando se pasa el mouse */
+.dashboard-item button:hover {
+    background-color: #0056b3;
 }
 
 /* Estilos específicos para la sección de "Próximas Reservas" */
-.dashboard-item .upcoming-reservations {
-    font-size: 14px;
-    color: #6c757d;
-    margin-top: 10px;
-}
-
-.upcoming-reservations, .maintenance {
-    margin-top: 40px;
-}
 .dashboard-item.upcoming-reservations {
     width: 100%;
 }
-.upcoming-reservations, .maintenance {
-    margin-top: 40px;
+
+/* Estilos para las tarjetas de mantenimiento */
+.dashboard-item .maintenance-card {
+    font-size: 14px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
+
+/* Estilos para las tarjetas de mantenimiento con diferentes prioridades */
+.dashboard-item .maintenance-card.high-priority {
+    background-color: #f8d7da;
+    border-left: 5px solid #dc3545;
+}
+
+.dashboard-item .maintenance-card.medium-priority {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+}
+
+.dashboard-item .maintenance-card.low-priority {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+}
+
+.dashboard-item .maintenance-card h3 {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.dashboard-item .maintenance-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Media Query para pantallas de dispositivos móviles (menos de 600px) */
+@media (max-width: 600px) {
+    .dashboard-item {
+        width: 100%;
+    }
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+/* Para tablets */
+@media (max-width: 1024px) {
+    .dashboard-item {
+        width: 48%;
+    }
+}
+
+/* Estilos del pie de página */
+.footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Esto asegura que el footer se pegue al final */
+    width: 100%;
+}
+
+/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }}
+

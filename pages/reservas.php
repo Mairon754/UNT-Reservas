@@ -39,7 +39,7 @@ try {
 
 <!-- Mostrar la tabla de reservas -->
 <h3>Reservas Activas</h3>
-<div id="responseMessage"></div>
+<div id="responseMessage" class="content"></div>
 <form action="reservas.php" method="POST" id="reservationForm">
     <table id="reservationsTable">
         <thead>
