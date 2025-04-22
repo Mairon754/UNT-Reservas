@@ -1,10 +1,11 @@
 <?php
 session_start();
-require_once '../config/db.php';
+require_once '../db/db.php';
+$db = Database::connect();
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit;
 }
 
@@ -14,7 +15,7 @@ $success = '';
 
 // Obtener datos del usuario
 try {
-    $query = "SELECT * FROM users WHERE id = :id";
+    $query = "SELECT * FROM usrs WHERE id = :id";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':id', $userId);
     $stmt->execute();
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             } else {
                 // Actualizar contraseña
                 $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-                $updateQuery = "UPDATE users SET password = :password, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
+                $updateQuery = "UPDATE usrs SET password = :password, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
                 $stmt = $db->prepare($updateQuery);
                 $stmt->bindParam(':password', $hashedPassword);
                 $stmt->bindParam(':id', $userId);
@@ -167,8 +168,8 @@ require_once '../navbar.php';
         </div>
         
         <div class="nav-buttons mt-4">
-            <a href="../profile.php" class="btn btn-secondary">Mi perfil</a>
-            <a href="../dashboard.php" class="btn btn-secondary">Volver al Dashboard</a>
+            <a href="../pages/profile.php" class="btn btn-secondary">Mi perfil</a>
+            <a href="../pages/dashboard.php" class="btn btn-secondary">Volver al Dashboard</a>
         </div>
     </div>
 </div>

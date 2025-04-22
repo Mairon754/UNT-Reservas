@@ -1,5 +1,5 @@
 <?php
-include '../../navbar.php';
+
 require_once '../../db/db.php';
 
 $error_message = "";
@@ -153,7 +153,7 @@ if (isset($_GET['id'])) {
 
         <div class="button-container">
             <button type="submit">Actualizar Solicitud</button>
-            <button type="button" class="button-cancel" onclick="window.location.href='mantenimiento.php'">Cancelar</button>
+            <button type="button" class="button-cancel" onclick="window.location.href='../../pages/mantenimiento.php'">Cancelar</button>
         </div>
     </form>
     <?php endif; ?>

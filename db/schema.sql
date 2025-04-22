@@ -53,5 +53,15 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+-- Crear tabla de configuración del sistema
+CREATE TABLE IF NOT EXISTS system_settings (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+-- Insertar un valor por defecto
+INSERT INTO system_settings (name, email) VALUES ('Sistema de Gestión de Recursos', 'admin@untgestion.com') 
+ON CONFLICT (id) DO NOTHING;
 
 

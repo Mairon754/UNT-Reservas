@@ -1,5 +1,5 @@
 <?php
-include '../../navbar.php';
+
 require_once '../../db/db.php';
 
 $error_message = "";
@@ -173,7 +173,7 @@ try {
 
         <div class="button-container">
             <button type="submit">Actualizar Reserva</button>
-            <button type="button" class="button-cancel" onclick="window.location.href='reservas.php'">Cancelar</button>
+            <button type="button" class="button-cancel" onclick="window.location.href='../../pages/recursos.php'">Cancelar</button>
         </div>
     </form>
     <?php endif; ?>

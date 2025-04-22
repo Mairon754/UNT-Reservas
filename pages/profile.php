@@ -1,11 +1,14 @@
 <?php
-session_start();
-require_once '../config/db.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+require_once '../db/db.php';
+$db = Database::connect();
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
+    header('Location: ../login.php');  // Redirigir al login si no hay sesión
+    exit();
 }
 
 $userId = $_SESSION['user_id'];
@@ -14,7 +17,7 @@ $success = '';
 
 // Obtener datos del usuario
 try {
-    $query = "SELECT * FROM users WHERE id = :id";
+    $query = "SELECT * FROM usrs WHERE id = :id";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':id', $userId);
     $stmt->execute();
@@ -40,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     } else {
         try {
             // Verificar si el email ya está en uso por otro usuario
-            $checkEmail = "SELECT id FROM users WHERE email = :email AND id != :id";
+            $checkEmail = "SELECT id FROM usrs WHERE email = :email AND id != :id";
             $stmt = $db->prepare($checkEmail);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':id', $userId);
@@ -50,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                 $error = "El correo electrónico ya está en uso por otro usuario";
             } else {
                 // Actualizar datos
-                $updateQuery = "UPDATE users SET name = :name, email = :email, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
+                $updateQuery = "UPDATE usrs SET name = :name, email = :email, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
                 $stmt = $db->prepare($updateQuery);
                 $stmt->bindParam(':name', $name);
                 $stmt->bindParam(':email', $email);
@@ -63,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                     $_SESSION['user_email'] = $email;
                     
                     // Recargar datos del usuario
-                    $query = "SELECT * FROM users WHERE id = :id";
+                    $query = "SELECT * FROM usrs WHERE id = :id";
                     $stmt = $db->prepare($query);
                     $stmt->bindParam(':id', $userId);
                     $stmt->execute();
