@@ -172,3 +172,6 @@ try {
         });
     });
 </script>
+<footer class="footer">
+    <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
+</footer>

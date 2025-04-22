@@ -444,4 +444,60 @@ footer p {
     .navbar {
         flex-direction: column;
     }}
+/* Estilos para la sección de reservas */
+.dashboard-item.upcoming-reservations {
+    width: 100%;
+}
+
+.upcoming-reservations h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.upcoming-reservations ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.upcoming-reservations li {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    padding: 15px;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-left: 5px solid #3498db; /* Color azul para reservas */
+}
+
+.upcoming-reservations li strong {
+    color: #333;
+    font-size: 16px;
+}
+
+/* Estilos para diferentes estados de reservas si los necesitas */
+.upcoming-reservations li.confirmed {
+    border-left: 5px solid #28a745; /* Verde para confirmadas */
+}
+
+.upcoming-reservations li.pending {
+    border-left: 5px solid #ffc107; /* Amarillo para pendientes */
+}
+
+.upcoming-reservations li.today {
+    border-left: 5px solid #dc3545; /* Rojo para las de hoy */
+    background-color: #f8f9fa;
+}
+
+/* Mensaje cuando no hay reservas */
+.upcoming-reservations p {
+    font-size: 14px;
+    color: #6c757d;
+    font-style: italic;
+}
 

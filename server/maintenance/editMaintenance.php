@@ -167,4 +167,7 @@ if (isset($_GET['id'])) {
         <?php endif; ?>
     </script>
 </body>
+<footer class="footer">
+    <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
+</footer>
 </html>

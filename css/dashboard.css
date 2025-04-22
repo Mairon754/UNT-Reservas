@@ -165,3 +165,26 @@
         color: #6c757d;
         margin-top: 10px;
     }
+
+    /* Contenido principal */
+.content {
+    flex-grow: 1; /* Esto hace que el contenido crezca y empuje el footer hacia el fondo */
+    padding: 20px;
+}
+
+/* Estilos del pie de página */
+.footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Esto asegura que el footer se pegue al final */
+    width: 100%;
+}
+
+/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }}
+

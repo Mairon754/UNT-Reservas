@@ -468,8 +468,9 @@ footer p {
             align-items: center;
             background-color: #003366;
             color: white;
-            padding: 10px 20px;
+            padding: 0px 20px;
             box-shadow: 0 2px 4px rgba(12, 58, 241, 0.76);
+            min-height: 70px;
         }
 
         .nav-links {
@@ -480,11 +481,14 @@ footer p {
         }
 
         .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+        color: white;
+        text-decoration: none;
+        padding: 8 15px;
+        height: 70px;        /* Misma altura que navbar min-height */
+        display: flex;
+        align-items: center;  /* Centra el texto verticalmente */
+        transition: background-color 0.3s;
+        font-weight: bold;
         }
 
         .nav-links a:hover {
@@ -515,7 +519,7 @@ footer p {
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            margin-right: 20px;
+            margin-right: 10px;
         }
 
         .user-info span {
@@ -525,7 +529,7 @@ footer p {
         .user-info a {
             color:rgb(11, 239, 22);
             text-decoration: none;
-            font-size: 12px;
+            font-size: 15px;
             margin-top: 3px;
         }
 
@@ -535,7 +539,7 @@ footer p {
         }
 
         .logo-image {
-            width:  75px;  /* o el tamaño que desee */
+            width:  100px;  /* o el tamaño que desee */
             height: auto;  /* mantiene la proporción */
             }
         
@@ -550,9 +554,9 @@ footer p {
 }
 
 .user-avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    border-radius: 60%;
     background-color: #3498db;
     color: white;
     display: flex;
@@ -560,6 +564,7 @@ footer p {
     justify-content: center;
     font-weight: bold;
     cursor: pointer;
+    font-size: 22px;
 }
 
 .dropdown-menu {
@@ -581,18 +586,21 @@ footer p {
 .dropdown-header {
     padding: 15px;
     border-bottom: 1px solid #eee;
+    background-color: #3498db;
 }
 
 .dropdown-header strong {
     display: block;
     font-size: 16px;
-    color: #333;
+    color: #ffe;
+    font-weight: bold;
 }
 
 .dropdown-header p {
     margin: 5px 0 0;
     font-size: 14px;
-    color: #666;
+    color: #fff;
+    font-weight: bold;
 }
 
 .user-role {
@@ -603,7 +611,7 @@ footer p {
 
 .dropdown-divider {
     height: 1px;
-    background-color: #eee;
+    background-color: #ffe;
     margin: 0;
 }
 
@@ -622,15 +630,17 @@ footer p {
 }
 
 .user-welcome {
-    font-size: 18px;
+    font-size: 22px;
     color: white;
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 5px;
 
     /* Ajustes de la barra de navegación para dispositivos pequeños */
 .navbar {
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Esto centrará los elementos verticalmente */
+    min-height: 70px; /* Aumenta la altura de la barra de navegación */
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
@@ -765,7 +775,5 @@ footer p {
     </div>
 </body>
 
-<footer class="footer">
-        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
-    </footer>
+
 </html>
