@@ -277,7 +277,7 @@ footer p {
     gap: 15px;
 }
 
-.user-avatar {
+/* .user-avatar {
     width: 40px;
     height: 40px;
     background-color: #4CAF50;
@@ -287,7 +287,7 @@ footer p {
     justify-content: center;
     font-weight: bold;
     color: white;
-}
+}*/
 
 .user-info {
     display: flex;

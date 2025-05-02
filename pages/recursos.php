@@ -36,7 +36,12 @@ try {
         <tr>
             <td><?= htmlspecialchars($resource['name']) ?></td>
             <td><?= htmlspecialchars($resource['type']) ?></td>
-            <td><?= htmlspecialchars($resource['status']) ?></td>
+            <td>
+                <select name="status" required>
+                    <option value="disponible">Disponible</option>
+                    <option value="no disponible">No Disponible</option>
+                </select>
+            </td>
             <td>
                 <a href="../server/task/editResource.php?id=<?= $resource['id'] ?>">Editar</a> |
                 <a href="recursos.php?delete_id=<?= $resource['id'] ?>">Eliminar</a>

@@ -1,177 +1,160 @@
 <?php
-// Ajustar las rutas relativas
-include '../navbar.php';  // Subir un directorio para acceder a navbar.php
-require_once '../db/db.php';  // Subir un directorio para acceder a db.php
+// reservas.php
 
+require_once '../db/db.php';
+require_once '../models/recursos.php';
+require_once '../models/reserva.php';
+session_start();
 
-// Lógica de eliminación de una reserva
-if (isset($_GET['delete_id'])) {
-    include '../server/reservation/deleteReservation.php'; // Eliminar reserva
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit();
 }
 
+// Instanciar las clases necesarias
+$recursoModel = new Recurso();
+$reservaModel = new Reserva();
+
+// Obtener todos los recursos disponibles para el dropdown
+$resources = $recursoModel->getAllRecursos();
+
+// Obtener todas las reservas para mostrar en el calendario
 try {
-    $db = Database::connect();  // Conectar a la base de datos
-    $query = "SELECT id, name FROM resources";  // Consulta para obtener los recursos
-    $stmt = $db->query($query);  // Ejecutar la consulta
-    $resources = $stmt->fetchAll(PDO::FETCH_ASSOC);  // Obtener los resultados en un arreglo
+    $reservations = $reservaModel->getAllReservas();
+    $reservationsJson = json_encode($reservations);  // Convertir las reservas a formato JSON para usarlas en JS
 } catch (PDOException $e) {
-    echo "Error al conectar o ejecutar la consulta: " . $e->getMessage();
-    die();
+    die("Error al obtener las reservas: " . $e->getMessage());
 }
 
-// Obtener las reservas existentes
-try {
-    $query = "SELECT r.id, res.name AS resource_name, r.responsible_person, r.reservation_date, r.reservation_time
-              FROM reservations r
-              JOIN resources res ON r.resource_id = res.id";  // Consulta para obtener todas las reservas
-    $stmt = $db->query($query);  // Ejecutar la consulta
-    $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);  // Obtener todos los resultados en un arreglo
-} catch (PDOException $e) {
-    echo "Error al conectar o ejecutar la consulta: " . $e->getMessage();
-    die();
-}
+// Obtener el mes y año actual para el calendario
+$month = isset($_GET['month']) ? intval($_GET['month']) : date('n');
+$year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
+
+// Nombre del mes en español
+$meses = [
+    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+    5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+    9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+];
+$nombreMes = $meses[$month];
 ?>
 
-<h2>Gestión de Reservas</h2>
-
-<!-- Botón para agregar una fila nueva -->
-<button id="addRowBtn" type="button">Agregar Fila</button>
-
-<!-- Mostrar la tabla de reservas -->
-<h3>Reservas Activas</h3>
-<div id="responseMessage" class="content"></div>
-<form action="reservas.php" method="POST" id="reservationForm">
-    <table id="reservationsTable">
-        <thead>
-            <tr>
-                <th>Recurso</th>
-                <th>Responsable</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Mostrar las reservas existentes en la base de datos
-            foreach ($reservations as $reservation) {
-                echo "<tr>";
-                echo "<td>" . $reservation['resource_name'] . "</td>";
-                echo "<td>" . $reservation['responsible_person'] . "</td>";
-                echo "<td>" . $reservation['reservation_date'] . "</td>";
-                echo "<td>" . $reservation['reservation_time'] . "</td>";
-                echo "<td>
-                        <a href='../server/reservation/editReservation.php?id=" . $reservation['id'] . "'>Editar</a> | 
-                        <a href='reservas.php?delete_id=" . $reservation['id'] . "'>Eliminar</a>
-                    </td>";
-                echo "</tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-</form>
-
-<script>
-    // Función para mostrar mensajes al usuario
-    function showMessage(message, isError = false) {
-        var messageElement = document.getElementById('responseMessage');
-        messageElement.innerHTML = message;
-        messageElement.style.padding = '10px';
-        messageElement.style.margin = '10px 0';
-        messageElement.style.backgroundColor = isError ? '#ffcccc' : '#ccffcc';
-        messageElement.style.border = '1px solid ' + (isError ? '#ff0000' : '#00cc00');
-        messageElement.style.borderRadius = '5px';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/reservas.css">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <?php include '../navbar.php'; ?>
+    
+    <div class="container">
+        <h1>Sistema de Reservas</h1>
         
-        // Eliminar el mensaje después de 5 segundos
-        setTimeout(function() {
-            messageElement.innerHTML = '';
-            messageElement.style.padding = '0';
-            messageElement.style.margin = '0';
-            messageElement.style.backgroundColor = 'transparent';
-            messageElement.style.border = 'none';
-        }, 5000);
-    }
-
-    // Agregar una fila nueva a la tabla
-    document.getElementById('addRowBtn').addEventListener('click', function() {
-        var table = document.getElementById('reservationsTable').getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow();
-        
-        // Crear celdas en la nueva fila
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-        var cell4 = newRow.insertCell(3);
-        var cell5 = newRow.insertCell(4);
-
-        // Agregar un select para el recurso
-        cell1.innerHTML = `
-            <select name="resource_id[]" required>
-                <?php foreach ($resources as $resource) { ?>
-                    <option value="<?= $resource['id'] ?>"><?= $resource['name'] ?></option>
-                <?php } ?>
-            </select>
-        `;
-        
-        // Campos de entrada para responsable, fecha y hora
-        cell2.innerHTML = `<input type="text" name="responsible_person[]" required>`;
-        cell3.innerHTML = `<input type="date" name="reservation_date[]" required>`;
-        cell4.innerHTML = `<input type="time" name="reservation_time[]" required>`;
-        
-        // Acción de editar y eliminar (por ahora vacío para insertar)
-        cell5.innerHTML = `<button type="button" class="saveBtn">Guardar</button> 
-                           <button type="button" class="deleteBtn">Eliminar</button>`;
-
-        // Eliminar fila
-        newRow.querySelector('.deleteBtn').addEventListener('click', function() {
-            table.deleteRow(newRow.rowIndex - 1); // Restamos 1 porque el rowIndex es relativo a toda la tabla
-        });
-
-        // Guardar fila
-        newRow.querySelector('.saveBtn').addEventListener('click', function() {
-            var resource_id = newRow.querySelector('select').value;
-            var responsible_person = newRow.querySelector('input[name="responsible_person[]"]').value;
-            var reservation_date = newRow.querySelector('input[name="reservation_date[]"]').value;
-            var reservation_time = newRow.querySelector('input[name="reservation_time[]"]').value;
-            
-            // Validar que los campos no estén vacíos
-            if (!responsible_person || !reservation_date || !reservation_time) {
-                showMessage("Por favor completa todos los campos", true);
-                return;
-            }
-            
-            // Deshabilitar el botón mientras se procesa
-            var saveBtn = newRow.querySelector('.saveBtn');
-            saveBtn.disabled = true;
-            saveBtn.textContent = 'Guardando...';
-            
-            // Enviar datos al servidor para guardar en la base de datos
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "../server/reservation/createReservation.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4) {
-                    saveBtn.disabled = false;
-                    saveBtn.textContent = 'Guardar';
+        <div class="calendar-container">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                        <h2 class="calendar-title"><?php echo $nombreMes . ' ' . $year; ?></h2>
+                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                        <button id="today">Hoy</button>
+                    </div>
+                    <div class="calendar-view-options">
+                        <button id="month-view" class="active">Mes</button>
+                        <button id="week-view">Semana</button>
+                        <button id="day-view">Día</button>
+                    </div>
+                </div>
+                
+                <div id="calendar-grid" class="calendar-grid">
+                    <div class="calendar-day-header">Dom</div>
+                    <div class="calendar-day-header">Lun</div>
+                    <div class="calendar-day-header">Mar</div>
+                    <div class="calendar-day-header">Mié</div>
+                    <div class="calendar-day-header">Jue</div>
+                    <div class="calendar-day-header">Vie</div>
+                    <div class="calendar-day-header">Sáb</div>
                     
-                    if (xhr.status == 200) {
-                        showMessage("Reserva creada con éxito!");
-                        // Recargar la página después de 1 segundo para mostrar la nueva reserva
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        showMessage("Error al guardar la reserva: " + xhr.responseText, true);
-                    }
-                }
-            };
-            xhr.send("resource_id=" + encodeURIComponent(resource_id) + 
-                     "&responsible_person=" + encodeURIComponent(responsible_person) + 
-                     "&reservation_date=" + encodeURIComponent(reservation_date) + 
-                     "&reservation_time=" + encodeURIComponent(reservation_time));
-        });
-    });
-</script>
-<footer class="footer">
-    <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
-</footer>
+                    <!-- Los días del calendario se generarán con JavaScript -->
+                </div>
+            </div>
+            
+            <div class="reservation-form">
+                <h2>Nueva Reserva</h2>
+                <!-- Formulario -->
+                <form id="reserva-form" method="post" action="../server/reservation/createReservation.php">
+                    <!-- Selección de recurso -->
+                    <div class="form-group">
+                        <label for="recurso_id">Seleccionar Recurso</label>
+                        <select class="form-control" id="recurso_id" name="resource_id" required>
+                            <option value="">Por favor selecciona un recurso</option>
+                            <?php foreach ($resources as $resource): ?>
+                                <option value="<?php echo $resource['id']; ?>"><?php echo $resource['name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Nombre de la persona responsable -->
+                    <div class="form-group">
+                        <label for="nombre_reserva">Reserva a Nombre de:</label>
+                        <input type="text" class="form-control" id="nombre_reserva" name="responsible_person" required>
+                    </div>
+
+                    <!-- Fecha y hora de inicio de la reserva -->
+                    <div class="form-group">
+                        <label for="fecha_inicio">Desde:</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="reservation_date" required>
+                        <input type="time" class="form-control" id="hora_inicio" name="reservation_time" required>
+                    </div>
+
+                    <!-- Fecha y hora de fin de la reserva (nuevo campo) -->
+                    <div class="form-group">
+                        <label for="fecha_fin">Hasta:</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="end_date" required>
+                        <input type="time" class="form-control" id="hora_fin" name="end_time" required>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones:</label>
+                        <textarea class="form-control" id="observaciones" name="observations" rows="3"></textarea>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary">Guardar</button>
+                        <button type="reset" class="btn-secondary">Resetear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal para mostrar errores de validación -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Error</h3>
+            <p id="error-message"></p>
+        </div>
+    </div>
+    
+    <script>
+        // Pasar datos de PHP a JavaScript
+        const currentMonth = <?php echo $month; ?>;
+        const currentYear = <?php echo $year; ?>;
+        const reservations = <?php echo $reservationsJson; ?>;
+    </script>
+    <script src="../js/calendar.js"></script>
+</body>
+</html>
