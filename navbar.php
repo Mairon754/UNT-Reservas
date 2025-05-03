@@ -12,8 +12,34 @@ if (!isset($_SESSION['user_id'])) {
 // Obtener datos del usuario
 $userName = $_SESSION['name'] ?? 'Usuario';
 $userEmail = $_SESSION['email'] ?? '';
-$userRole = $_SESSION['role'] ?? 'user';
-$isAdmin = ($userEmail === 'mairon@gmail.com');
+
+// Usar is_admin desde la sesión para determinar si es administrador
+$isAdmin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : false;
+
+// Obtener rol del usuario desde la base de datos
+require_once dirname(__FILE__) . '/db/db.php';
+try {
+    $db = Database::connect();
+    $query = "SELECT r.role_name 
+              FROM user_roles ur 
+              JOIN roles r ON ur.role_id = r.id 
+              WHERE ur.user_id = :user_id
+              ORDER BY CASE WHEN r.role_name = 'admin' THEN 0 ELSE 1 END";
+    $stmt = $db->prepare($query);
+    $stmt->execute([':user_id' => $_SESSION['user_id']]);
+    $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Si no tiene roles asignados, establecer como usuario por defecto
+    if (empty($roles)) {
+        $userRole = 'Usuario';
+    } else {
+        // Usar el primer rol (el más importante según el ORDER BY)
+        $userRole = ucfirst($roles[0]);
+    }
+} catch (PDOException $e) {
+    // Si hay un error en la consulta, usar un valor predeterminado
+    $userRole = $isAdmin ? 'Administrador' : 'Usuario';
+}
 
 // Determinar la ruta base para los enlaces
 $basePath = '';
@@ -21,14 +47,6 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) {
     $basePath = '.';
 } else {
     $basePath = './pages';
-
-if (!isset($userEmail)) {
-    $userEmail = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : '';
-}
-
-if (!isset($userRole)) {
-    $userRole = isset($_SESSION['user_role']) ? ucfirst($_SESSION['user_role']) : 'Usuario';
-}
 }
 ?>
 
@@ -38,429 +56,7 @@ if (!isset($userRole)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/pages.css">
-    
-    
     <style>
-        /* Estilos generales */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7fb;
-    color: #333;
-    margin: 0;
-}
-
-header {
-    background-color: #003366;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header .logo img {
-    height: 40px;
-}
-
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-main {
-    padding: 20px;
-    margin: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-h2 {
-    color: #003366;
-}
-
-/* Estilos para el Dashboard */
-.dashboard-stats {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.stat-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 22%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.stat-card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    color: #003366;
-}
-
-.stat-card p {
-    font-size: 1.5rem;
-    color: #333;
-}
-
-/* Estilos para la gestión de recursos */
-.resource-cards, .maintenance-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.resource-card, .maintenance-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 22%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.resource-card h3, .maintenance-card h3 {
-    font-size: 1.2rem;
-    color: #003366;
-}
-
-.resource-card p, .maintenance-card p {
-    font-size: 1.2rem;
-    color: #333;
-}
-
-/* Estilos para el listado de recursos y mantenimiento */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-}
-
-th {
-    background-color: #003366;
-    color: white;
-}
-
-a {
-    text-decoration: none;
-    color: #003366;
-}
-
-a:hover {
-    color: #0055cc;
-}
-
-button {
-    padding: 10px;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0055cc;
-}
-
-/* Formulario */
-form {
-    margin-top: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    color: #333;
-}
-
-input[type="text"], input[type="date"], input[type="time"], select, textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-textarea {
-    resize: vertical;
-    height: 100px;
-}
-
-/* Estilos para la página de Dashboard */
-.dashboard-stats {
-    margin-top: 40px;
-}
-
-.resources {
-    margin-top: 40px;
-}
-
-.upcoming-reservations, .maintenance {
-    margin-top: 40px;
-}
-
-/* Estilos para la página de Recursos */
-h3 {
-    margin-bottom: 20px;
-}
-
-/* Estilos para el pie de página */
-footer {
-    background-color: #003366;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: 40px;
-}
-
-footer p {
-    font-size: 0.9rem;
-}
-
-/* Responsividad para dispositivos pequeños */
-@media (max-width: 768px) {
-    .stat-card, .resource-card, .maintenance-card {
-        width: 48%;
-    }
-
-    nav ul li {
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .dashboard-stats {
-        flex-direction: column;
-    }
-
-    table {
-        font-size: 0.9rem;
-    }
-}
-
-/* Estilo global del dashboard */
-.dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* Cada cuadro dentro del dashboard */
-.dashboard-item {
-    background-color: #f4f4f4;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 8px;
-    width: 22%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-/* Navbar mejorado */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #003366;
-    color: white;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.nav-links a:hover {
-    background-color: #555;
-}
-
-/* Perfil de usuario en la navbar */
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #4CAF50;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.user-info span {
-    font-size: 14px;
-}
-
-.user-info a {
-    color: #ff9800;
-    text-decoration: none;
-    font-size: 12px;
-    margin-top: 3px;
-}
-
-.user-info a:hover {
-    text-decoration: underline;
-}
-
-/* Títulos dentro de los cuadros */
-.dashboard-item h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #333;
-    font-weight: bold;
-}
-
-/* Números o valores dentro de los cuadros */
-.dashboard-item p {
-    font-size: 28px;
-    font-weight: 600;
-    color: #4CAF50;  /* Un verde similar al que aparece en la imagen */
-    margin: 0;
-}
-
-/* Estilos para los cuadros de "Recursos por Tipo" */
-.dashboard-item.resources {
-    background-color: #d1e7dd;  /* Color para los recursos disponibles */
-    border-left: 10px solid #28a745; /* Línea de color verde al lado */
-}
-
-/* Cuadros con alertas de tipo "mantenimiento" o "problema" */
-.dashboard-item.alert {
-    background-color: #ffecb3;  /* Amarillo para mostrar alertas */
-    border-left: 10px solid #f39c12;  /* Línea de color amarillo fuerte */
-}
-
-/* Cuadros con alertas de tipo "problema crítico" */
-.dashboard-item.critical {
-    background-color: #f8d7da;  /* Fondo rojo pálido */
-    border-left: 10px solid #dc3545;  /* Línea roja al lado */
-}
-
-/* Estilo para la parte de "Recursos por Tipo", más específico */
-.dashboard-item .resource-type {
-    font-size: 16px;
-    color: #666;
-}
-
-/* Para los botones dentro del dashboard */
-.dashboard-item button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-}
-
-/* Cambiar color de los botones cuando se pasa el mouse */
-.dashboard-item button:hover {
-    background-color: #0056b3;
-}
-
-/* Estilos específicos para la sección de "Próximas Reservas" */
-.dashboard-item.upcoming-reservations {
-    width: 100%;
-}
-
-/* Estilos para las tarjetas de mantenimiento */
-.dashboard-item .maintenance-card {
-    font-size: 14px;
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Estilos para las tarjetas de mantenimiento con diferentes prioridades */
-.dashboard-item .maintenance-card.high-priority {
-    background-color: #f8d7da;
-    border-left: 5px solid #dc3545;
-}
-
-.dashboard-item .maintenance-card.medium-priority {
-    background-color: #fff3cd;
-    border-left: 5px solid #ffc107;
-}
-
-.dashboard-item .maintenance-card.low-priority {
-    background-color: #d4edda;
-    border-left: 5px solid #28a745;
-}
-
-.dashboard-item .maintenance-card h3 {
-    font-size: 18px;
-    color: #333;
-    font-weight: bold;
-}
-
-.dashboard-item .maintenance-card p {
-    font-size: 14px;
-    color: #555;
-}
-
-.logo-image {
-    width: 2px;  /* o el tamaño que desee */
-    height: auto;  /* mantiene la proporción */
-    }
-
-
         /* Estilos para la barra de navegación */
         .navbar {
             display: flex;
@@ -481,14 +77,14 @@ footer p {
         }
 
         .nav-links a {
-        color: white;
-        text-decoration: none;
-        padding: 8 15px;
-        height: 70px;        /* Misma altura que navbar min-height */
-        display: flex;
-        align-items: center;  /* Centra el texto verticalmente */
-        transition: background-color 0.3s;
-        font-weight: bold;
+            color: white;
+            text-decoration: none;
+            padding: 8 15px;
+            height: 70px;        /* Misma altura que navbar min-height */
+            display: flex;
+            align-items: center;  /* Centra el texto verticalmente */
+            transition: background-color 0.3s;
+            font-weight: bold;
         }
 
         .nav-links a:hover {
@@ -535,192 +131,132 @@ footer p {
 
         .user-info a:hover {
             text-decoration: underline;
-
         }
 
         .logo-image {
-            width:  100px;  /* o el tamaño que desee */
+            width: 100px;  /* o el tamaño que desee */
             height: auto;  /* mantiene la proporción */
-            }
+        }
         
         .logo {
             margin-right: 20px; /* Espacio entre logo y enlaces */
         }
+        
         /* Estilos para el dropdown del usuario */
-.user-profile {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
 
-.user-avatar {
-    width: 55px;
-    height: 55px;
-    border-radius: 60%;
-    background-color: #3498db;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 22px;
-}
+        .user-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 60%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 22px;
+        }
 
-.dropdown-menu {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    min-width: 200px;
-    z-index: 1000;
-    display: none; /* Inicialmente oculto */
-}
+        .dropdown-menu {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            min-width: 200px;
+            z-index: 1000;
+            display: none; /* Inicialmente oculto */
+        }
 
-.dropdown-menu.show {
-    display: block; /* Se muestra cuando tiene la clase 'show' */
-}
+        .dropdown-menu.show {
+            display: block; /* Se muestra cuando tiene la clase 'show' */
+        }
 
-.dropdown-header {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #3498db;
-}
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background-color: #3498db;
+        }
 
-.dropdown-header strong {
-    display: block;
-    font-size: 16px;
-    color: #ffe;
-    font-weight: bold;
-}
+        .dropdown-header strong {
+            display: block;
+            font-size: 16px;
+            color: #ffe;
+            font-weight: bold;
+        }
 
-.dropdown-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
-    color: #fff;
-    font-weight: bold;
-}
+        .dropdown-header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #fff;
+            font-weight: bold;
+        }
 
-.user-role {
-    color: #3498db;
-    font-weight: 500;
-    margin-top: 5px;
-}
+        .user-role {
+            color: #e8f4fc;
+            font-weight: 500;
+            margin-top: 5px;
+            background-color: #2580b3;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 12px;
+        }
 
-.dropdown-divider {
-    height: 1px;
-    background-color: #ffe;
-    margin: 0;
-}
+        .dropdown-divider {
+            height: 1px;
+            background-color: #ffe;
+            margin: 0;
+        }
 
-.dropdown-menu a {
-    display: block;
-    padding: 12px 15px;
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
 
-.dropdown-menu a:hover {
-    background-color: #f8f9fa;
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
 
-}
+        .user-welcome {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin-right: 5px;
+        }
 
-.user-welcome {
-    font-size: 22px;
-    color: white;
-    font-weight: bold;
-    margin-right: 5px;
+        /* Media Query para la barra de navegación en pantallas pequeñas */
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column; /* Poner los elementos en columna */
+                align-items: center;
+            }
 
-    /* Ajustes de la barra de navegación para dispositivos pequeños */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Esto centrará los elementos verticalmente */
-    min-height: 70px; /* Aumenta la altura de la barra de navegación */
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-}
+            .navbar .user-info {
+                margin-bottom: 10px; /* Separar la información del usuario */
+            }
 
-.navbar .user-info {
-    font-size: 14px;
-    margin-right: 20px;
-}
-
-/* Ajuste del avatar en pantallas pequeñas */
-.user-avatar {
-    background-color: #007bff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    color: white;
-    font-weight: bold;
-}
-
-/* Media Query para la barra de navegación en pantallas pequeñas */
-@media (max-width: 600px) {
-    .navbar {
-        flex-direction: column; /* Poner los elementos en columna */
-        align-items: center;
-    }
-
-    .navbar .user-info {
-        margin-bottom: 10px; /* Separar la información del usuario */
-    }
-
-    .user-avatar {
-        font-size: 18px; /* Aumentar el tamaño de la letra en el avatar */
-    }
-}
-/* Para dispositivos móviles */
-@media (max-width: 600px) {
-    .dashboard-item {
-        width: 100%;
-    }
-
-    .navbar {
-        flex-direction: column;
-    }
-}
-
-/* Para tablets */
-@media (max-width: 1024px) {
-    .dashboard-item {
-        width: 48%;
-    }
-}
-/* Estilos del pie de página */
-.footer {
-    background-color: #003366;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: auto; /* Esto asegura que el footer se pegue al final */
-    width: 100%;
-}
-
-/* Media Queries (opcional, si quieres hacer el diseño más amigable para móviles) */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-    }}
-
-
-
-
-}
+            .user-avatar {
+                font-size: 18px; /* Aumentar el tamaño de la letra en el avatar */
+            }
+        }
     </style>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         const avatarToggle = document.getElementById('avatar-dropdown-toggle');
         const dropdownMenu = document.getElementById('user-dropdown-menu');
-        
+
         // Mostrar/ocultar el menú al hacer clic en el avatar
         avatarToggle.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -737,7 +273,6 @@ footer p {
     </script>
 </head>
 <body>
-
     <div class="navbar">
         <div class="nav-links">
             <div class="logo">
@@ -749,6 +284,9 @@ footer p {
             <?php endif; ?>
             <a href="<?= $basePath ?>/reservas.php">Reservas</a>
             <a href="<?= $basePath ?>/mantenimiento.php">Mantenimiento</a>
+            <?php if ($isAdmin): ?>
+            <a href="<?= $basePath ?>/admin/users.php">Usuarios</a>
+            <?php endif; ?>
         </div>
         <br><br>
         <div class="user-info">
@@ -771,9 +309,6 @@ footer p {
                 <a href="<?= $basePath ?>/logout.php">Cerrar sesión</a>
             </div>
         </div>
-        </div>
     </div>
 </body>
-
-
 </html>

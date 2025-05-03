@@ -153,6 +153,30 @@ try {
     $error_message = "Error al obtener usuarios: " . $e->getMessage();
 }
 
+// Obtener el rol del usuario actual para mostrarlo en el navbar
+$userRole = "Usuario";
+$userName = $_SESSION['name'] ?? 'Usuario';
+$userEmail = $_SESSION['email'] ?? '';
+$isAdmin = $_SESSION['is_admin'] ?? false;
+
+try {
+    $query = "SELECT r.role_name 
+              FROM user_roles ur 
+              JOIN roles r ON ur.role_id = r.id 
+              WHERE ur.user_id = :user_id
+              ORDER BY CASE WHEN r.role_name = 'admin' THEN 0 ELSE 1 END";
+    $stmt = $db->prepare($query);
+    $stmt->execute([':user_id' => $_SESSION['user_id']]);
+    $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    if (!empty($roles)) {
+        $userRole = ucfirst($roles[0]);
+    }
+} catch (PDOException $e) {
+    // Si hay un error, usar un valor predeterminado
+    $userRole = $isAdmin ? 'Administrador' : 'Usuario';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -176,7 +200,8 @@ try {
         }
         
         th {
-            background-color: #f2f2f2;
+            background-color: #003366;
+            ;
         }
         
         tr:nth-child(even) {
@@ -247,10 +272,209 @@ try {
             border-radius: 4px;
             font-size: 0.8em;
         }
+        
+        /* Estilos para la barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #003366;
+            color: white;
+            padding: 0px 20px;
+            box-shadow: 0 2px 4px rgba(12, 58, 241, 0.76);
+            min-height: 70px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex: 1; /* Esto hará que ocupe todo el espacio disponible */
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            height: 70px;        /* Misma altura que navbar min-height */
+            display: flex;
+            align-items: center;  /* Centra el texto verticalmente */
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            background-color: #555;
+        }
+
+        /* Perfil de usuario en la navbar */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 55px;
+            height: 55px;
+            background-color: #3498db;
+            border-radius: 60%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-right: 10px;
+        }
+
+        .user-welcome {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            min-width: 200px;
+            z-index: 1000;
+            display: none; /* Inicialmente oculto */
+        }
+
+        .dropdown-menu.show {
+            display: block; /* Se muestra cuando tiene la clase 'show' */
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background-color: #3498db;
+        }
+
+        .dropdown-header strong {
+            display: block;
+            font-size: 16px;
+            color: #ffe;
+            font-weight: bold;
+        }
+
+        .dropdown-header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .user-role {
+            color: #e8f4fc;
+            font-weight: 500;
+            margin-top: 5px;
+            background-color: #2580b3;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: #ffe;
+            margin: 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+
+        .logo-image {
+            width: 100px;
+            height: auto;
+        }
+        
+        .logo {
+            margin-right: 20px;
+        }
     </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarToggle = document.getElementById('avatar-dropdown-toggle');
+        const dropdownMenu = document.getElementById('user-dropdown-menu');
+
+        // Mostrar/ocultar el menú al hacer clic en el avatar
+        avatarToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+        // Cerrar el menú si se hace clic fuera de él
+        document.addEventListener('click', function(e) {
+            if (!avatarToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    });
+    </script>
 </head>
 <body>
-    <?php include_once '../navbar.php'; ?>
+    <!-- Navbar con rutas fijas -->
+    <div class="navbar">
+        <div class="nav-links">
+            <div class="logo">
+                <img src="../ass/logoUNT.png" class="logo-image">
+            </div>
+            <a href="../pages/dashboard.php">Dashboard</a>
+            <?php if ($isAdmin): ?>
+            <a href="../pages/recursos.php">Recursos</a>
+            <?php endif; ?>
+            <a href="../pages/reservas.php">Reservas</a>
+            <a href="../pages/mantenimiento.php">Mantenimiento</a>
+            <?php if ($isAdmin): ?>
+            <a href="../admin/users.php">Usuarios</a>
+            <?php endif; ?>
+        </div>
+        <div class="user-info">
+            <span class="user-welcome">Bienvenido, <?php echo $userName; ?>!</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar" id="avatar-dropdown-toggle">
+                <span><?= substr($userName, 0, 1) ?></span>
+            </div>
+            <div class="dropdown-menu" id="user-dropdown-menu">
+                <div class="dropdown-header">
+                    <strong><?= htmlspecialchars($userName) ?></strong>
+                    <p><?= htmlspecialchars($userEmail) ?></p>
+                    <p class="user-role"><?= htmlspecialchars($userRole) ?></p>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="../pages/profile.php">Mi Perfil</a>
+                <a href="../pages/settings.php">Configuración</a>
+                <a href="../pages/logout.php">Cerrar sesión</a>
+            </div>
+        </div>
+    </div>
     
     <div class="container">
         <h2>Gestión de Usuarios</h2>
