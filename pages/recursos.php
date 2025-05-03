@@ -20,7 +20,7 @@ try {
 
 <h2>Gestión de Recursos</h2>
 <div id="responseMessage" class="content"></div>
-<button id="addRowBtn" type="button">Agregar Fila</button>
+<button id="addRowBtn" type="button">Agregar Recursos</button>
 
 <table id="resourcesTable">
     <thead>

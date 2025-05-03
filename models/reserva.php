@@ -3,23 +3,29 @@ require_once '../db/db.php';  // Incluye la conexión a la base de datos
 
 class Reserva {
     private $db;
-
+    
     public function __construct() {
-        $this->db = Database::connect();  // Conexión a la base de datos
+        $this->db = Database::connect();
     }
-
-    // Obtener todas las reservas
+    
+    /**
+     * Obtiene todas las reservas con información del recurso
+     * @return array Lista de todas las reservas
+     */
     public function getAllReservas() {
         try {
-            $query = "SELECT r.id, r.resource_id, r.responsible_person, r.reservation_date, r.reservation_time, 
-                      r.observations, res.name AS resource_name 
-                      FROM reservations r
-                      JOIN resources res ON r.resource_id = res.id
-                      ORDER BY r.reservation_date, r.reservation_time";
-            $stmt = $this->db->query($query);
+            // Modificar la consulta para incluir el nombre del recurso
+            $query = "SELECT r.*, res.name as resource_name 
+                     FROM reservations r 
+                     JOIN resources res ON r.resource_id = res.id 
+                     ORDER BY r.reservation_date, r.reservation_time";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            die("Error al obtener las reservas: " . $e->getMessage());
+            error_log("Error en getAllReservas: " . $e->getMessage());
+            throw $e;
         }
     }
 

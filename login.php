@@ -17,7 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar si el usuario existe
     try {
         $db = Database::connect();
-        $query = "SELECT * FROM usrs WHERE email = :email";
+        // Consulta modificada para incluir el rol del usuario
+        $query = "SELECT u.*, r.role_name 
+                 FROM usrs u 
+                 LEFT JOIN user_roles ur ON u.id = ur.user_id 
+                 LEFT JOIN roles r ON ur.role_id = r.id 
+                 WHERE u.email = :email";
         $stmt = $db->prepare($query);
         $stmt->execute([':email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,8 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['name'] = $user['name'];
-            // Añadir bandera para identificar si es el usuario especial
-            $_SESSION['is_admin'] = ($user['email'] === 'mairon@gmail.com') ? true : false;
+            
+            // Verificar si el rol es de administrador
+            $_SESSION['is_admin'] = ($user['role_name'] === 'admin') ? true : false;
+            
             header('Location: pages/dashboard.php');
             exit();
         } else {

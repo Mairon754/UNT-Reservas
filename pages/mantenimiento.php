@@ -34,7 +34,7 @@ try {
 <h2>Solicitudes de Mantenimiento</h2>
 
 <!-- Botón para agregar una fila nueva -->
-<button id="addRowBtn" type="button">Agregar Fila</button>
+<button id="addRowBtn" type="button">Agregar Mantenimiento</button>
 
 <!-- Mostrar la tabla de mantenimiento -->
 <h3>Solicitudes Activas</h3>
@@ -104,7 +104,7 @@ try {
         var cell5 = newRow.insertCell(4);
 
         // Agregar un select para el recurso
-        cell1.innerHTML = `
+        cell1.innerHTML = ` 
             <select name="resource_id[]" required>
                 <?php foreach ($resources as $resource) { ?>
                     <option value="<?= $resource['id'] ?>"><?= $resource['name'] ?></option>
@@ -114,7 +114,12 @@ try {
         
         // Campos de entrada para descripción, estado y prioridad
         cell2.innerHTML = `<input type="text" name="description[]" required>`;
-        cell3.innerHTML = `<input type="text" name="status[]" value="reportado" required>`;
+        cell3.innerHTML = `
+            <select name="status[]" required>
+                <option value="reportado">Reportado</option>
+                <option value="no reportado">No Reportado</option>
+            </select>
+        `;
         cell4.innerHTML = `<select name="priority[]">
             <option value="baja">Baja</option>
             <option value="media">Media</option>
@@ -134,7 +139,7 @@ try {
         newRow.querySelector('.saveBtn').addEventListener('click', function() {
             var resource_id = newRow.querySelector('select').value;
             var description = newRow.querySelector('input[name="description[]"]').value;
-            var status = newRow.querySelector('input[name="status[]"]').value;
+            var status = newRow.querySelector('select[name="status[]"]').value;
             var priority = newRow.querySelector('select[name="priority[]"]').value;
             
             // Validar que los campos no estén vacíos
@@ -162,6 +167,7 @@ try {
         });
     });
 </script>
+
 <footer class="footer">
     <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
 </footer>

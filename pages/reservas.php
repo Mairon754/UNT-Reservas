@@ -21,8 +21,11 @@ $resources = $recursoModel->getAllRecursos();
 
 // Obtener todas las reservas para mostrar en el calendario
 try {
+    // Usar el modelo de reserva para obtener las reservas
     $reservations = $reservaModel->getAllReservas();
-    $reservationsJson = json_encode($reservations);  // Convertir las reservas a formato JSON para usarlas en JS
+    
+    // Convertir las reservas a formato JSON para usarlas en JS
+    $reservationsJson = json_encode($reservations);
 } catch (PDOException $e) {
     die("Error al obtener las reservas: " . $e->getMessage());
 }
@@ -153,7 +156,14 @@ $nombreMes = $meses[$month];
         // Pasar datos de PHP a JavaScript
         const currentMonth = <?php echo $month; ?>;
         const currentYear = <?php echo $year; ?>;
-        const reservations = <?php echo $reservationsJson; ?>;
+        const reservations = <?php echo json_encode($reservations ?: []); ?>;
+
+        
+        // Debugging: Verificar si los datos se están cargando correctamente
+        console.log('Datos cargados en reservas.php:');
+        console.log('Month:', currentMonth);
+        console.log('Year:', currentYear);
+        console.log('Reservations:', reservations);
     </script>
     <script src="../js/calendar.js"></script>
 </body>
