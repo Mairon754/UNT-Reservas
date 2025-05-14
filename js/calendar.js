@@ -395,6 +395,102 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log(`Se mostraron ${reservasVisibles} de ${reservationsToShow.length} reservas en el calendario`);
     }
+
+    // Función para mostrar los detalles de una reserva al hacer clic
+function showReservationDetails(reservationId) {
+    // Encontrar la reserva en el array de reservas
+    const reservation = reservations.find(r => r.id == reservationId);
+    if (!reservation) return;
+    
+    // Comprobar si el usuario actual es el creador de la reserva
+    const isOwner = reservation.user_id == currentUserId;
+    
+    // Crear contenido HTML para el modal
+    let detailsHTML = `
+        <div>
+            <h3>Detalles de la Reserva</h3>
+            <p><strong>Recurso:</strong> ${reservation.resource_name || 'No especificado'}</p>
+            <p><strong>Responsable:</strong> ${reservation.responsible_person}</p>
+            <p><strong>Desde:</strong> ${reservation.reservation_date} ${reservation.reservation_time}</p>
+            <p><strong>Hasta:</strong> ${reservation.end_date || reservation.reservation_date} ${reservation.end_time || reservation.reservation_time}</p>
+            <p><strong>Observaciones:</strong> ${reservation.observations || 'No hay observaciones'}</p>
+            <div class="actions">
+    `;
+    
+    // Añadir botones de acción solo si el usuario es el creador
+    if (isOwner) {
+        detailsHTML += `
+            <a href="../../server/reservation/editReservation.php?id=${reservation.id}" class="btn-edit">Editar</a>
+            <button class="btn-delete" onclick="deleteReservation(${reservation.id})">Eliminar</button>
+        `;
+    } else {
+        detailsHTML += `
+            <p class="info-message">Solo el creador de esta reserva puede editarla o eliminarla.</p>
+        `;
+    }
+    
+    detailsHTML += `
+            </div>
+        </div>
+    `;
+    
+    // Mostrar el modal con los detalles
+    showModal(detailsHTML);
+}
+
+// Función para eliminar una reserva (validará en el servidor si el usuario es el creador)
+function deleteReservation(reservationId) {
+    if (confirm('¿Estás seguro que deseas eliminar esta reserva?')) {
+        // Enviar solicitud AJAX para eliminar la reserva
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '../../server/reservation/deleteReservation.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            alert(response.message);
+                            // Recargar la página o actualizar el calendario
+                            window.location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    } catch (e) {
+                        alert('Error en la respuesta del servidor');
+                    }
+                } else {
+                    alert('Error en la solicitud');
+                }
+            }
+        };
+        xhr.send('id=' + reservationId);
+    }
+}
+
+// Función auxiliar para mostrar un modal
+function showModal(content) {
+    // Crear el modal si no existe
+    let modal = document.getElementById('reservation-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'reservation-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+    
+    // Asignar el contenido y mostrar
+    modal.innerHTML = content;
+    modal.style.display = 'block';
+    
+    // Cerrar el modal al hacer clic fuera de él
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
     
     // Función para verificar si una fecha es hoy
     function isToday(date) {

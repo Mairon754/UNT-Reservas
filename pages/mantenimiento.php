@@ -73,6 +73,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mantenimiento</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Estilos para la barra de navegación */
         .navbar {
@@ -218,8 +219,22 @@ try {
         .logo {
             margin-right: 20px;
         }
+
+        /* Nuevos estilos para el contenido principal */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
         
-        /* Estilos para la tabla de mantenimiento */
+        /* Estilos para el contenedor principal */
         .container {
             padding: 20px;
         }
@@ -239,6 +254,9 @@ try {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
         }
         
         th {
@@ -273,6 +291,7 @@ try {
             margin-left: 5px;
         }
         
+        /* Estilos para formularios e inputs */
         input, select {
             padding: 6px 10px;
             margin: 4px 0;
@@ -288,9 +307,89 @@ try {
             margin-top: 30px;
         }
         
+        /* Estilos para mensajes de respuesta */
         #responseMessage {
             margin: 10px 0;
             padding: 0;
+            margin: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            border-radius: var(--border-radius);
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        
+        /* Estilos para el footer */
+        
+        /* Media queries para responsividad */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .nav-links {
+                gap: 5px;
+            }
+            
+            .nav-links a {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .user-welcome {
+                display: none;
+            }
+            
+            .nav-links a {
+                font-size: 14px;
+                padding: 8px 8px;
+            }
+            
+            .logo-image {
+                width: 80px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 24px;
+            }
+            
+            h3 {
+                font-size: 20px;
+            }
+            
+            .nav-links a {
+                padding: 8px 5px;
+                font-size: 13px;
+            }
+            
+            .user-avatar {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -336,42 +435,59 @@ try {
         <h2>Solicitudes de Mantenimiento</h2>
 
         <!-- Botón para agregar una fila nueva -->
-        <button id="addRowBtn" type="button">Agregar Mantenimiento</button>
+        <button id="addRowBtn" type="button"><i class="fas fa-plus-circle"></i> Agregar Solicitud</button>
+
+        <!-- Mostrar mensajes de respuesta -->
+        <div id="responseMessage"></div>
 
         <!-- Mostrar la tabla de mantenimiento -->
-        <h3>Solicitudes Activas</h3>
-        <div id="responseMessage" class="content"></div>
-        <form action="../pages/mantenimiento.php" method="POST" id="maintenanceForm">
-            <table id="maintenanceTable">
-                <thead>
-                    <tr>
-                        <th>Recurso</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Prioridad</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    // Mostrar las solicitudes de mantenimiento existentes en la base de datos
-                    foreach ($requests as $request) {
-                        echo "<tr>";
-                        echo "<td>" . $request['resource_name'] . "</td>";
-                        echo "<td>" . $request['description'] . "</td>";
-                        echo "<td>" . $request['status'] . "</td>";
-                        echo "<td>" . $request['priority'] . "</td>";
-                        echo "<td>
-                                <a href='../server/maintenance/editMaintenance.php?id=" . $request['id'] . "'>Editar</a> | 
-                                <a href='../pages/mantenimiento.php?delete_id=" . $request['id'] . "'>Eliminar</a>
-                              </td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </form>
+        <h3><i class="fas fa-clipboard-list"></i> Solicitudes Activas</h3>
+        <div class="table-container">
+            <form action="../pages/mantenimiento.php" method="POST" id="maintenanceForm">
+                <table id="maintenanceTable">
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Prioridad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Mostrar las solicitudes de mantenimiento existentes en la base de datos
+                        foreach ($requests as $request) {
+                            // Determinar clases de estilo para estado y prioridad
+                            $statusClass = 'status-' . strtolower(str_replace(' ', '-', $request['status']));
+                            $priorityClass = 'priority-' . strtolower($request['priority']);
+                            
+                            echo "<tr>";
+                            echo "<td>" . $request['resource_name'] . "</td>";
+                            echo "<td>" . $request['description'] . "</td>";
+                            echo "<td><span class='status " . $statusClass . "'>" . $request['status'] . "</span></td>";
+                            echo "<td><span class='priority " . $priorityClass . "'>" . $request['priority'] . "</span></td>";
+                            echo "<td class='action-links'>
+                                    <a href='../server/maintenance/editMaintenance.php?id=" . $request['id'] . "' class='edit-link'><i class='fas fa-edit'></i> Editar</a>
+                                    <a href='../pages/mantenimiento.php?delete_id=" . $request['id'] . "' class='delete-link'><i class='fas fa-trash-alt'></i> Eliminar</a>
+                                  </td>";
+                            echo "</tr>";
+                        }
+                        
+                        // Si no hay solicitudes, mostrar mensaje
+                        if (empty($requests)) {
+                            echo "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No hay solicitudes de mantenimiento activas</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </form>
+        </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
+    </footer>
 
     <script>
         // Función para el dropdown del avatar
@@ -397,19 +513,12 @@ try {
         function showMessage(message, isError = false) {
             var messageElement = document.getElementById('responseMessage');
             messageElement.innerHTML = message;
-            messageElement.style.padding = '10px';
-            messageElement.style.margin = '10px 0';
-            messageElement.style.backgroundColor = isError ? '#ffcccc' : '#ccffcc';
-            messageElement.style.border = '1px solid ' + (isError ? '#ff0000' : '#00cc00');
-            messageElement.style.borderRadius = '5px';
+            messageElement.className = isError ? 'error-message' : 'success-message';
             
             // Eliminar el mensaje después de 5 segundos
             setTimeout(function() {
                 messageElement.innerHTML = '';
-                messageElement.style.padding = '0';
-                messageElement.style.margin = '0';
-                messageElement.style.backgroundColor = 'transparent';
-                messageElement.style.border = 'none';
+                messageElement.className = '';
             }, 5000);
         }
 
@@ -435,7 +544,7 @@ try {
             `;
             
             // Campos de entrada para descripción, estado y prioridad
-            cell2.innerHTML = `<input type="text" name="description[]" required>`;
+            cell2.innerHTML = `<input type="text" name="description[]" required placeholder="Describe el problema...">`;
             cell3.innerHTML = `
                 <select name="status[]" required>
                     <option value="reportado">Reportado</option>
@@ -449,8 +558,8 @@ try {
             </select>`;
             
             // Acción de guardar y eliminar
-            cell5.innerHTML = `<button type="button" class="saveBtn">Guardar</button> 
-                              <button type="button" class="deleteBtn">Eliminar</button>`;
+            cell5.innerHTML = `<button type="button" class="saveBtn"><i class="fas fa-save"></i> Guardar</button> 
+                              <button type="button" class="deleteBtn"><i class="fas fa-times"></i> Cancelar</button>`;
 
             // Eliminar fila
             newRow.querySelector('.deleteBtn').addEventListener('click', function() {
@@ -490,8 +599,6 @@ try {
         });
     </script>
 
-    <footer class="footer">
-        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
-    </footer>
+
 </body>
 </html>

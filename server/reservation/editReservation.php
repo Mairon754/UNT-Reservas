@@ -1,5 +1,6 @@
 <?php
 require_once '../../db/db.php';
+require_once '../../models/reserva.php';
 
 $error_message = "";
 $success_message = "";
@@ -12,24 +13,31 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$user_id = $_SESSION['user_id'];
+
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
+
+    // Instanciar el modelo de Reserva
+    $reservaModel = new Reserva();
 
     // Procesar eliminación de reserva si se envió el formulario de eliminación
     if (isset($_POST['delete_reservation'])) {
         try {
-            $db = Database::connect();
-            $query = "DELETE FROM reservations WHERE id = :id";
-            $stmt = $db->prepare($query);
-            $result = $stmt->execute([':id' => $id]);
-            
-            if ($result) {
-                $delete_success = "La reserva ha sido eliminada correctamente";
-                // Redireccionar después de 2 segundos
-                header("refresh:2;url=../../pages/reservas.php");
-                exit();
+            // Verificar si el usuario es el creador de la reserva
+            if (!$reservaModel->isUserOwner($id, $user_id)) {
+                $error_message = "No tienes permiso para eliminar esta reserva";
             } else {
-                $error_message = "Error al eliminar la reserva";
+                $result = $reservaModel->deleteReserva($id, $user_id);
+                
+                if ($result) {
+                    $delete_success = "La reserva ha sido eliminada correctamente";
+                    // Redireccionar después de 2 segundos
+                    header("refresh:2;url=../../pages/reservas.php");
+                    exit();
+                } else {
+                    $error_message = "Error al eliminar la reserva";
+                }
             }
         } catch (PDOException $e) {
             $error_message = "Error al eliminar la reserva: " . $e->getMessage();
@@ -38,20 +46,33 @@ if (isset($_GET['id'])) {
 
     // Obtener la información de la reserva
     try {
-        $db = Database::connect();
-        $query = "SELECT r.*, res.name as resource_name 
-                 FROM reservations r 
-                 LEFT JOIN resources res ON r.resource_id = res.id 
-                 WHERE r.id = :id";
-        $stmt = $db->prepare($query);
-        $stmt->execute([':id' => $id]);
-        $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
+        $reservation = $reservaModel->getReservaById($id);
         
         if (!$reservation) {
+            // La reserva no existe
             $error_message = "La reserva no existe o fue eliminada";
         }
         
+        // Verificar si el usuario actual es el creador de la reserva
+        $canEdit = false;
+        
+        if ($reservation) {
+            if (!isset($reservation['user_id']) || $reservation['user_id'] === null) {
+                // Para reservas antiguas sin user_id, permitimos editar
+                $canEdit = true;
+            } else if ($reservation['user_id'] == $user_id) {
+                $canEdit = true;
+            } else if (isset($reservation['created_by']) && $reservation['created_by'] == $user_id) {
+                $canEdit = true;
+            }
+            
+            if (!$canEdit) {
+                $error_message = "No tienes permiso para editar esta reserva";
+            }
+        }
+        
         // Verificamos si existen las columnas end_date y end_time en la tabla
+        $db = Database::connect();
         $query = "SELECT column_name FROM information_schema.columns 
                  WHERE table_name = 'reservations' AND column_name = 'end_date'";
         $stmt = $db->query($query);
@@ -99,59 +120,38 @@ if (isset($_GET['id'])) {
 
     // Verificar si se enviaron datos para actualizar la reserva
     if (isset($_POST['resource_id'], $_POST['responsible_person'], $_POST['reservation_date'], $_POST['reservation_time'])) {
-        // Obtener los datos del formulario
-        $resource_id = $_POST['resource_id'];
-        $responsible_person = $_POST['responsible_person'];
-        $reservation_date = $_POST['reservation_date'];
-        $reservation_time = $_POST['reservation_time'];
-        
-        // Nuevos campos de fecha y hora de finalización
-        $end_date = isset($_POST['end_date']) && !empty($_POST['end_date']) ? $_POST['end_date'] : $reservation_date;
-        $end_time = isset($_POST['end_time']) && !empty($_POST['end_time']) ? $_POST['end_time'] : $reservation_time;
-        
-        // Observaciones (opcional)
-        $observations = isset($_POST['observations']) ? $_POST['observations'] : '';
+        // Verificar si el usuario tiene permiso para editar
+        if (!$canEdit) {
+            $error_message = "No tienes permiso para editar esta reserva";
+        } else {
+            // Obtener los datos del formulario
+            $resource_id = $_POST['resource_id'];
+            $responsible_person = $_POST['responsible_person'];
+            $reservation_date = $_POST['reservation_date'];
+            $reservation_time = $_POST['reservation_time'];
+            
+            // Nuevos campos de fecha y hora de finalización
+            $end_date = isset($_POST['end_date']) && !empty($_POST['end_date']) ? $_POST['end_date'] : $reservation_date;
+            $end_time = isset($_POST['end_time']) && !empty($_POST['end_time']) ? $_POST['end_time'] : $reservation_time;
+            
+            // Observaciones (opcional)
+            $observations = isset($_POST['observations']) ? $_POST['observations'] : '';
 
-        // Actualizar la reserva en la base de datos
-        try {
-            // Ahora actualizamos la reserva con todos los campos
-            $query = "UPDATE reservations SET 
-                      resource_id = :resource_id, 
-                      responsible_person = :responsible_person,
-                      reservation_date = :reservation_date, 
-                      reservation_time = :reservation_time,
-                      end_date = :end_date,
-                      end_time = :end_time,
-                      observations = :observations 
-                      WHERE id = :id";
-                      
-            $stmt = $db->prepare($query);
-            $result = $stmt->execute([
-                ':resource_id' => $resource_id,
-                ':responsible_person' => $responsible_person,
-                ':reservation_date' => $reservation_date,
-                ':reservation_time' => $reservation_time,
-                ':end_date' => $end_date,
-                ':end_time' => $end_time,
-                ':observations' => $observations,
-                ':id' => $id
-            ]);
+            // Actualizar la reserva en la base de datos
+            try {
+                // Usar el modelo para actualizar la reserva
+                $result = $reservaModel->updateReserva($id, $resource_id, $responsible_person, $reservation_date, $reservation_time, $user_id, $observations);
 
-            if ($result) {
-                $success_message = "Reserva actualizada con éxito";
-                // Actualizar los datos de la reserva después de guardar
-                $query = "SELECT r.*, res.name as resource_name 
-                         FROM reservations r 
-                         LEFT JOIN resources res ON r.resource_id = res.id 
-                         WHERE r.id = :id";
-                $stmt = $db->prepare($query);
-                $stmt->execute([':id' => $id]);
-                $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
-            } else {
-                $error_message = "Error al actualizar la reserva";
+                if ($result) {
+                    $success_message = "Reserva actualizada con éxito";
+                    // Actualizar los datos de la reserva después de guardar
+                    $reservation = $reservaModel->getReservaById($id);
+                } else {
+                    $error_message = "Error al actualizar la reserva o no tienes permiso para editarla";
+                }
+            } catch (PDOException $e) {
+                $error_message = "Error al actualizar la reserva: " . $e->getMessage();
             }
-        } catch (PDOException $e) {
-            $error_message = "Error al actualizar la reserva: " . $e->getMessage();
         }
     }
 } else {
@@ -320,66 +320,61 @@ try {
             <?php endif; ?>
         </div>
 
-        <form action="editReservation.php?id=<?= $id ?>" method="POST">
-            <div class="form-group">
-                <label for="resource_id">Recurso:</label>
-                <select name="resource_id" id="resource_id" required>
-                    <?php foreach ($resources as $resource): ?>
-                        <option value="<?= $resource['id'] ?>" <?= $reservation['resource_id'] == $resource['id'] ? 'selected' : '' ?>>
-                            <?= $resource['name'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+        <?php if ($canEdit): ?>
+            <form action="editReservation.php?id=<?= $id ?>" method="POST">
+                <div class="form-group">
+                    <label for="resource_id">Recurso:</label>
+                    <select name="resource_id" id="resource_id" required>
+                        <?php foreach ($resources as $resource): ?>
+                            <option value="<?= $resource['id'] ?>" <?= $reservation['resource_id'] == $resource['id'] ? 'selected' : '' ?>>
+                                <?= $resource['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="responsible_person">Responsable:</label>
-                <input type="text" name="responsible_person" id="responsible_person" value="<?= htmlspecialchars($reservation['responsible_person']) ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="responsible_person">Responsable:</label>
+                    <input type="text" name="responsible_person" id="responsible_person" value="<?= htmlspecialchars($reservation['responsible_person']) ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="reservation_date">Fecha de inicio:</label>
-                <input type="date" name="reservation_date" id="reservation_date" value="<?= $reservation['reservation_date'] ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="reservation_date">Fecha de inicio:</label>
+                    <input type="date" name="reservation_date" id="reservation_date" value="<?= $reservation['reservation_date'] ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="reservation_time">Hora de inicio:</label>
-                <input type="time" name="reservation_time" id="reservation_time" value="<?= $reservation['reservation_time'] ?>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="end_date">Fecha de fin:</label>
-                <input type="date" name="end_date" id="end_date" value="<?= isset($reservation['end_date']) && !empty($reservation['end_date']) ? $reservation['end_date'] : $reservation['reservation_date'] ?>">
-            </div>
-            
-            <div class="form-group">
-                <label for="end_time">Hora de fin:</label>
-                <input type="time" name="end_time" id="end_time" value="<?= isset($reservation['end_time']) && !empty($reservation['end_time']) ? $reservation['end_time'] : $reservation['reservation_time'] ?>">
-            </div>
-            
-            <div class="form-group">
-                <label for="observations">Observaciones:</label>
-                <textarea name="observations" id="observations" rows="3"><?= isset($reservation['observations']) ? htmlspecialchars($reservation['observations']) : '' ?></textarea>
-            </div>
+                <div class="form-group">
+                    <label for="reservation_time">Hora de inicio:</label>
+                    <input type="time" name="reservation_time" id="reservation_time" value="<?= $reservation['reservation_time'] ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="end_date">Fecha de fin:</label>
+                    <input type="date" name="end_date" id="end_date" value="<?= isset($reservation['end_date']) && !empty($reservation['end_date']) ? $reservation['end_date'] : $reservation['reservation_date'] ?>">
+                </div>
+                
+                <div class="form-group">
+                    <label for="end_time">Hora de fin:</label>
+                    <input type="time" name="end_time" id="end_time" value="<?= isset($reservation['end_time']) && !empty($reservation['end_time']) ? $reservation['end_time'] : $reservation['reservation_time'] ?>">
+                </div>
+                
+                <div class="form-group">
+                    <label for="observations">Observaciones:</label>
+                    <textarea name="observations" id="observations" rows="3"><?= isset($reservation['observations']) ? htmlspecialchars($reservation['observations']) : '' ?></textarea>
+                </div>
 
-            <div class="button-container">
-                <button type="submit" class="btn-primary">Guardar Cambios</button>
-                <button type="button" class="button-cancel" onclick="window.location.href='../../pages/reservas.php'">Cancelar</button>
-                <button type="button" class="button-delete" onclick="toggleDeleteConfirmation()">Eliminar Reserva</button>
-            </div>
-        </form>
-        
-        <!-- Confirmación de eliminación -->
-        <div id="delete-confirmation" class="delete-confirmation">
-            <p><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar esta reserva? Esta acción no se puede deshacer.</p>
-            <div class="button-container">
-                <form action="editReservation.php?id=<?= $id ?>" method="POST">
-                    <input type="hidden" name="delete_reservation" value="1">
-                    <button type="submit" class="button-delete">Sí, Eliminar</button>
-                </form>
-                <button type="button" class="btn-primary" onclick="toggleDeleteConfirmation()">Cancelar</button>
-            </div>
-        </div>
+                <div class="button-container">
+                    <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    <button type="button" class="button-cancel" onclick="window.location.href='../../pages/reservas.php'">Cancelar</button>
+                    <button type="button" class="button-delete" onclick="confirmDelete()">Eliminar Reserva</button>
+                </div>
+            </form>
+        <?php else: ?>
+            <div class="message error">No tienes permiso para editar esta reserva. Solo el creador puede editarla.</div>
+            <button class="back-button" onclick="window.location.href='../../pages/reservas.php'">
+                <i class="fas fa-arrow-left"></i> Volver al Calendario
+            </button>
+        <?php endif; ?>
         <?php else: ?>
             <div class="message error">No se encontró la reserva o no tiene permisos para verla.</div>
             <button class="back-button" onclick="window.location.href='../../pages/reservas.php'">
@@ -389,13 +384,22 @@ try {
     </div>
 
     <script>
-        // Mostrar/ocultar confirmación de eliminación
-        function toggleDeleteConfirmation() {
-            const confirmationDiv = document.getElementById('delete-confirmation');
-            if (confirmationDiv.style.display === 'block') {
-                confirmationDiv.style.display = 'none';
-            } else {
-                confirmationDiv.style.display = 'block';
+        // Función para confirmar y eliminar la reserva
+        function confirmDelete() {
+            if (confirm('¿Está seguro que desea eliminar esta reserva? Esta acción no se puede deshacer.')) {
+                // Crear un formulario dinámicamente para enviar la solicitud de eliminación
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'editReservation.php?id=<?= $id ?>';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'delete_reservation';
+                input.value = '1';
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
             }
         }
         

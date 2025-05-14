@@ -1,7 +1,7 @@
 -- schema.sql: Esquema de la base de datos para UNTGestión
 
 -- Crear tabla de usuarios
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS usrs (
     id SERIAL PRIMARY KEY, 
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -43,16 +43,6 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
 );
 
--- Crear la tabla de usuarios
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    name VARCHAR(100),
-    role VARCHAR(50) DEFAULT 'user',  -- Puede ser 'admin', 'user', etc.
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 -- Crear tabla de configuración del sistema
 CREATE TABLE IF NOT EXISTS system_settings (
     id SERIAL PRIMARY KEY,

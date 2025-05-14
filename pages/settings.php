@@ -1,81 +1,215 @@
 <?php
-session_start();
+// pages/settings.php - Versión completa con todas las secciones funcionales
 require_once '../db/db.php';
-$db = Database::connect();
 
-// Verificar si el usuario está logueado
+// Verificar sesión
+session_start();
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
-    exit;
+    exit();
 }
 
+// Obtener datos del usuario para la navbar
+$userName = $_SESSION['name'] ?? 'Usuario';
+$userEmail = $_SESSION['email'] ?? '';
+$isAdmin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : false;
 $userId = $_SESSION['user_id'];
-$error = '';
-$success = '';
 
-// Obtener datos del usuario
+// Mensajes de estado y error
+$statusMessage = '';
+$errorMessage = '';
+$activeTab = 'notifications'; // Pestaña activa por defecto
+
+// Conectar a la base de datos
 try {
+    $db = Database::connect();
+    
+    // Obtener datos completos del usuario
     $query = "SELECT * FROM usrs WHERE id = :id";
     $stmt = $db->prepare($query);
-    $stmt->bindParam(':id', $userId);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute([':id' => $userId]);
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if (!$user) {
-        throw new Exception("Usuario no encontrado");
+    // Obtener configuración actual de notificaciones
+    $query = "SELECT * FROM user_notification_settings WHERE user_id = :user_id";
+    $stmt = $db->prepare($query);
+    $stmt->execute([':user_id' => $userId]);
+    $notificationSettings = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Si no hay configuración, crear con valores predeterminados
+    if (!$notificationSettings) {
+        $query = "INSERT INTO user_notification_settings 
+                  (user_id, email_notifications, reservation_notifications, maintenance_notifications) 
+                  VALUES (:user_id, TRUE, TRUE, TRUE)";
+        $stmt = $db->prepare($query);
+        $stmt->execute([':user_id' => $userId]);
+        
+        // Obtener los valores recién insertados
+        $query = "SELECT * FROM user_notification_settings WHERE user_id = :user_id";
+        $stmt = $db->prepare($query);
+        $stmt->execute([':user_id' => $userId]);
+        $notificationSettings = $stmt->fetch(PDO::FETCH_ASSOC);
     }
-} catch (Exception $e) {
-    $error = $e->getMessage();
+} catch (PDOException $e) {
+    $errorMessage = "Error al obtener datos: " . $e->getMessage();
+    // Valores predeterminados por si falla la consulta
+    $notificationSettings = [
+        'email_notifications' => true,
+        'reservation_notifications' => true,
+        'maintenance_notifications' => true
+    ];
 }
 
-// Cambiar contraseña
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
+// Procesar formulario de notificaciones
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_notifications'])) {
+    $activeTab = 'notifications';
+    
+    // Obtener valores del formulario
+    $emailNotifications = isset($_POST['email_notifications']) ? true : false;
+    $reservationNotifications = isset($_POST['reservation_notifications']) ? true : false;
+    $maintenanceNotifications = isset($_POST['maintenance_notifications']) ? true : false;
+    
+    try {
+        // Actualizar la configuración en la base de datos
+        $query = "UPDATE user_notification_settings 
+                  SET email_notifications = :email_notifications,
+                      reservation_notifications = :reservation_notifications,
+                      maintenance_notifications = :maintenance_notifications,
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE user_id = :user_id";
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            ':email_notifications' => $emailNotifications,
+            ':reservation_notifications' => $reservationNotifications,
+            ':maintenance_notifications' => $maintenanceNotifications,
+            ':user_id' => $userId
+        ]);
+        
+        // Actualizar los valores locales después de guardar
+        $notificationSettings['email_notifications'] = $emailNotifications;
+        $notificationSettings['reservation_notifications'] = $reservationNotifications;
+        $notificationSettings['maintenance_notifications'] = $maintenanceNotifications;
+        
+        $statusMessage = "Preferencias de notificaciones guardadas correctamente.";
+    } catch (PDOException $e) {
+        $errorMessage = "Error al guardar las preferencias: " . $e->getMessage();
+    }
+}
+
+// Procesar formulario de perfil
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
+    $activeTab = 'profile';
+    
+    // Obtener valores del formulario
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    
+    // Validar datos
+    if (empty($name) || empty($email)) {
+        $errorMessage = "Todos los campos son obligatorios.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errorMessage = "El formato del correo electrónico no es válido.";
+    } else {
+        try {
+            // Verificar si el correo ya existe para otro usuario
+            $query = "SELECT COUNT(*) FROM usrs WHERE email = :email AND id != :id";
+            $stmt = $db->prepare($query);
+            $stmt->execute([':email' => $email, ':id' => $userId]);
+            $emailExists = $stmt->fetchColumn();
+            
+            if ($emailExists) {
+                $errorMessage = "El correo electrónico ya está en uso por otro usuario.";
+            } else {
+                // Actualizar datos del usuario
+                $query = "UPDATE usrs SET name = :name, email = :email, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $result = $stmt->execute([
+                    ':name' => $name,
+                    ':email' => $email,
+                    ':id' => $userId
+                ]);
+                
+                if ($result) {
+                    // Actualizar datos en sesión
+                    $_SESSION['name'] = $name;
+                    $_SESSION['email'] = $email;
+                    $userName = $name;
+                    $userEmail = $email;
+                    
+                    // Actualizar datos locales
+                    $userData['name'] = $name;
+                    $userData['email'] = $email;
+                    
+                    $statusMessage = "Perfil actualizado correctamente.";
+                } else {
+                    $errorMessage = "Error al actualizar el perfil.";
+                }
+            }
+        } catch (PDOException $e) {
+            $errorMessage = "Error al actualizar el perfil: " . $e->getMessage();
+        }
+    }
+}
+
+// Procesar formulario de cambio de contraseña
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_password'])) {
+    $activeTab = 'password';
+    
+    // Obtener valores del formulario
     $currentPassword = $_POST['current_password'];
     $newPassword = $_POST['new_password'];
     $confirmPassword = $_POST['confirm_password'];
     
-    // Validaciones
+    // Validar datos
     if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
-        $error = "Todos los campos son obligatorios";
+        $errorMessage = "Todos los campos son obligatorios.";
     } elseif ($newPassword !== $confirmPassword) {
-        $error = "Las nuevas contraseñas no coinciden";
-    } elseif (strlen($newPassword) < 8) {
-        $error = "La nueva contraseña debe tener al menos 8 caracteres";
+        $errorMessage = "Las contraseñas nuevas no coinciden.";
+    } elseif (strlen($newPassword) < 6) {
+        $errorMessage = "La contraseña debe tener al menos 6 caracteres.";
     } else {
         try {
-            // Verificar contraseña actual
-            if (!password_verify($currentPassword, $user['password'])) {
-                $error = "La contraseña actual es incorrecta";
+            // Verificar la contraseña actual
+            $query = "SELECT password FROM usrs WHERE id = :id";
+            $stmt = $db->prepare($query);
+            $stmt->execute([':id' => $userId]);
+            $storedHashedPassword = $stmt->fetchColumn();
+            
+            if (!password_verify($currentPassword, $storedHashedPassword)) {
+                $errorMessage = "La contraseña actual es incorrecta.";
             } else {
-                // Actualizar contraseña
-                $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-                $updateQuery = "UPDATE usrs SET password = :password, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
-                $stmt = $db->prepare($updateQuery);
-                $stmt->bindParam(':password', $hashedPassword);
-                $stmt->bindParam(':id', $userId);
+                // Actualizar la contraseña
+                $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                $query = "UPDATE usrs SET password = :password, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
+                $stmt = $db->prepare($query);
+                $result = $stmt->execute([
+                    ':password' => $hashedNewPassword,
+                    ':id' => $userId
+                ]);
                 
-                if ($stmt->execute()) {
-                    $success = "Contraseña actualizada exitosamente";
+                if ($result) {
+                    $statusMessage = "Contraseña actualizada correctamente.";
                 } else {
-                    $error = "Error al actualizar la contraseña";
+                    $errorMessage = "Error al actualizar la contraseña.";
                 }
             }
-        } catch (Exception $e) {
-            $error = "Error: " . $e->getMessage();
+        } catch (PDOException $e) {
+            $errorMessage = "Error al actualizar la contraseña: " . $e->getMessage();
         }
     }
 }
 
 // Variables para navbar.php
-$userName = $user['name'];
-$userEmail = $user['email'];
-$userRole = ucfirst($user['role']);
-$isAdmin = ($user['role'] === 'admin');
+$userName = $userData['name'];
+$userEmail = $userData['email'];
+$userRole = ucfirst($userData['role']);
+$isAdmin = ($userData['role'] === 'admin');
 $basePath = '..';
 
 // Incluir el header y la navbar
 require_once '../navbar.php';
 ?>
+<!-- Aquí el resto del código de la página de configuración -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <div class="container" class="content">
