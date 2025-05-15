@@ -236,85 +236,226 @@ try {
         
         /* Estilos para el contenedor principal */
         .container {
-            padding: 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
         }
         
+        /* Estilos para títulos */
         h2 {
-            margin-bottom: 20px;
             color: #003366;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: #3498db;
+        }
+        
+        h3 {
+            color: #003366;
+            margin: 25px 0 15px;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        
+        /* Estilos para botones */
+        button, .btn {
+            padding: 10px 18px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        button i, .btn i {
+            font-size: 16px;
+        }
+        
+        button:hover, .btn:hover {
+            background-color: #0051a0;
+            transform: translateY(-2px);
+        }
+        
+        #addRowBtn {
+            background-color: #2ecc71;
+            margin-bottom: 25px;
+        }
+        
+        #addRowBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        .saveBtn {
+            background-color: #2ecc71;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        
+        .saveBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        .deleteBtn {
+            background-color: #e74c3c;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        
+        .deleteBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Estilos para la tabla */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            margin-bottom: 30px;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
         }
         
         th {
             background-color: #003366;
-            ;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
         }
         
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
         }
         
-        button {
-            padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+        tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        /* Estilos para las acciones en la tabla */
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-links a {
+            text-decoration: none;
+            padding: 6px 12px;
             border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        button:hover {
-            background-color: #45a049;
+        .edit-link {
+            color: #003366;
+            background-color: rgba(52, 152, 219, 0.1);
         }
         
-        .saveBtn {
-            background-color: #4CAF50;
+        .edit-link:hover {
+            background-color: rgba(52, 152, 219, 0.2);
         }
         
-        .deleteBtn {
-            background-color: #f44336;
-            margin-left: 5px;
+        .delete-link {
+            color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .delete-link:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        /* Estilos para indicadores de estado y prioridad */
+        .status, .priority {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .status-reportado {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        
+        .status-no-reportado {
+            background-color: #ffe0b2;
+            color: #ef6c00;
+        }
+        
+        .priority-alta {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .priority-media {
+            background-color: #fff8e1;
+            color: #ff8f00;
+        }
+        
+        .priority-baja {
+            background-color: #e8f5e9;
+            color: #2e7d32;
         }
         
         /* Estilos para formularios e inputs */
         input, select {
-            padding: 6px 10px;
-            margin: 4px 0;
+            padding: 10px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
             width: 100%;
-            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: white;
         }
         
-        .footer {
-            background-color: #003366;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 30px;
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
         /* Estilos para mensajes de respuesta */
         #responseMessage {
-            margin: 10px 0;
             padding: 0;
             margin: 0;
             overflow: hidden;
-            transition: var(--transition);
-            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            border-radius: 8px;
         }
         
         .success-message {
@@ -322,7 +463,7 @@ try {
             color: #155724;
             border: 1px solid #c3e6cb;
             padding: 15px;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         
@@ -331,24 +472,24 @@ try {
             color: #721c24;
             border: 1px solid #f5c6cb;
             padding: 15px;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         
         /* Estilos para el footer */
+        .footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
         
         /* Media queries para responsividad */
         @media (max-width: 992px) {
             .container {
                 padding: 0 15px;
-            }
-            
-            .nav-links {
-                gap: 5px;
-            }
-            
-            .nav-links a {
-                padding: 8px 10px;
             }
         }
         
@@ -356,39 +497,11 @@ try {
             .table-container {
                 overflow-x: auto;
             }
-            
-            .user-welcome {
-                display: none;
-            }
-            
-            .nav-links a {
-                font-size: 14px;
-                padding: 8px 8px;
-            }
-            
-            .logo-image {
-                width: 80px;
-            }
         }
         
         @media (max-width: 576px) {
             h2 {
                 font-size: 24px;
-            }
-            
-            h3 {
-                font-size: 20px;
-            }
-            
-            .nav-links a {
-                padding: 8px 5px;
-                font-size: 13px;
-            }
-            
-            .user-avatar {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
             }
         }
     </style>
@@ -432,7 +545,7 @@ try {
     </div>
 
     <div class="container">
-        <h2>Solicitudes de Mantenimiento</h2>
+        <h2><i class="fas fa-tools"></i> Solicitudes de Mantenimiento</h2>
 
         <!-- Botón para agregar una fila nueva -->
         <button id="addRowBtn" type="button"><i class="fas fa-plus-circle"></i> Agregar Solicitud</button>
@@ -598,7 +711,5 @@ try {
             });
         });
     </script>
-
-
 </body>
 </html>

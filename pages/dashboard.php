@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas -1/db/db.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas/db/db.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
@@ -201,8 +201,9 @@ try {
         
         /* Maintenance cards - horizontal layout with more space */
         .maintenance-cards {
+            .maintenance-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); /* Tarjetas más anchas */
+            grid-template-columns: 1fr 1fr; /* Exactamente 2 tarjetas por fila */
             gap: 1.5rem;
             margin-bottom: 2.5rem;
         }
@@ -622,7 +623,7 @@ try {
                             </div>
                             
                             <div class="maintenance-card-footer">
-                                <a href="/project-UNT-reservas -1/server/maintenance/mantenimiento_detalle.php?id=<?php echo $request['id']; ?>" class="card-btn btn-primary">Ver Detalles</a>
+                                <a href="/project-UNT-reservas/server/maintenance/mantenimiento_detalle.php?id=<?php echo $request['id']; ?>" class="card-btn btn-primary">Ver Detalles</a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -712,7 +713,7 @@ try {
                 </a>
                 
                 <?php if ($is_admin): ?>
-                <a href="usuarios.php" class="quick-action-card">
+                <a href="../admin/users.php" class="quick-action-card">
                     <div class="quick-action-icon">
                         <i class="fas fa-users-cog"></i>
                     </div>

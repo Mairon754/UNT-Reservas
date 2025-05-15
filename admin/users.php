@@ -57,13 +57,18 @@ if (isset($_GET['make_admin_id'])) {
             if ($stmt->rowCount() > 0) {
                 $error_message = "El usuario ya es administrador";
             } else {
-                // Asignar rol de administrador
+                // Asignar rol de administrador en la tabla user_roles
                 $query = "INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, :role_id)";
                 $stmt = $db->prepare($query);
                 $stmt->execute([
                     ':user_id' => $user_id,
                     ':role_id' => $admin_role_id
                 ]);
+                
+                // IMPORTANTE: Actualizar también el campo role en la tabla usrs
+                $query = "UPDATE usrs SET role = 'admin' WHERE id = :user_id";
+                $stmt = $db->prepare($query);
+                $stmt->execute([':user_id' => $user_id]);
                 
                 $success_message = "Usuario promovido a administrador con éxito";
             }
@@ -92,13 +97,18 @@ if (isset($_GET['remove_admin_id'])) {
             if ($admin_role) {
                 $admin_role_id = $admin_role['id'];
                 
-                // Comprobar si tiene el rol de administrador
+                // Quitar rol de administrador de la tabla user_roles
                 $query = "DELETE FROM user_roles WHERE user_id = :user_id AND role_id = :role_id";
                 $stmt = $db->prepare($query);
                 $stmt->execute([
                     ':user_id' => $user_id,
                     ':role_id' => $admin_role_id
                 ]);
+                
+                // IMPORTANTE: Actualizar también el campo role en la tabla usrs
+                $query = "UPDATE usrs SET role = 'user' WHERE id = :user_id";
+                $stmt = $db->prepare($query);
+                $stmt->execute([':user_id' => $user_id]);
                 
                 // Asegurarse de que el usuario tiene al menos el rol de usuario normal
                 $query = "SELECT id FROM roles WHERE role_name = 'user'";
@@ -186,93 +196,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        
-        th {
-            background-color: #003366;
-            ;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        tr:hover {
-            background-color: #e9e9e9;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-link {
-            padding: 4px 8px;
-            text-decoration: none;
-            border-radius: 4px;
-            color: white;
-            font-size: 0.9em;
-        }
-        
-        .edit-link {
-            background-color: #4CAF50;
-        }
-        
-        .delete-link {
-            background-color: #f44336;
-        }
-        
-        .admin-link {
-            background-color: #2196F3;
-        }
-        
-        .remove-admin-link {
-            background-color: #FF9800;
-        }
-        
-        .success-message {
-            background-color: #dff0d8;
-            color: #3c763d;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .error-message {
-            background-color: #f2dede;
-            color: #a94442;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .admin-badge {
-            background-color: #2196F3;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.8em;
-        }
-        
-        .user-badge {
-            background-color: #9E9E9E;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.8em;
-        }
-        
         /* Estilos para la barra de navegación */
         .navbar {
             display: flex;
@@ -417,26 +342,231 @@ try {
         .logo {
             margin-right: 20px;
         }
-    </style>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const avatarToggle = document.getElementById('avatar-dropdown-toggle');
-        const dropdownMenu = document.getElementById('user-dropdown-menu');
 
-        // Mostrar/ocultar el menú al hacer clic en el avatar
-        avatarToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
-        });
+        /* Nuevos estilos para el contenido principal */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
         
-        // Cerrar el menú si se hace clic fuera de él
-        document.addEventListener('click', function(e) {
-            if (!avatarToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.remove('show');
+        /* Estilos para el contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Estilos para títulos */
+        h2 {
+            color: #003366;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: #3498db;
+        }
+        
+        h3 {
+            color: #003366;
+            margin: 25px 0 15px;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        
+        /* Estilos para la tabla */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #003366;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        /* Estilos para los badges de rol */
+        .admin-badge, .user-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .admin-badge {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        
+        .user-badge {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+
+        /* Estilos para los botones de acción */
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-link {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .edit-link:hover {
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .delete-link {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .delete-link:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        .admin-link {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #2980b9;
+        }
+        
+        .admin-link:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        
+        .remove-admin-link {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .remove-admin-link:hover {
+            background-color: rgba(243, 156, 18, 0.2);
+        }
+        
+        /* Estilos para mensajes de respuesta */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilos para el footer */
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Media queries para responsividad */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 15px;
             }
-        });
-    });
-    </script>
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .action-link {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 24px;
+            }
+            
+            h3 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar con rutas fijas -->
@@ -477,66 +607,102 @@ try {
     </div>
     
     <div class="container">
-        <h2>Gestión de Usuarios</h2>
+        <h2><i class="fas fa-users"></i> Gestión de Usuarios</h2>
         
         <?php if ($error_message): ?>
-            <div class="error-message"><?= $error_message ?></div>
+            <div class="error-message"><i class="fas fa-exclamation-circle"></i> <?= $error_message ?></div>
         <?php endif; ?>
         
         <?php if ($success_message): ?>
-            <div class="success-message"><?= $success_message ?></div>
+            <div class="success-message"><i class="fas fa-check-circle"></i> <?= $success_message ?></div>
         <?php endif; ?>
 
-        <h3>Usuarios Registrados</h3>
+        <h3><i class="fas fa-user-friends"></i> Usuarios Registrados</h3>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($users as $user): ?>
+        <div class="table-container">
+            <table>
+                <thead>
                     <tr>
-                        <td><?= htmlspecialchars($user['name']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
-                        <td>
-                            <?php if ($user['is_admin']): ?>
-                                <span class="admin-badge">Administrador</span>
-                            <?php else: ?>
-                                <span class="user-badge">Usuario</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="actions">
-                            <a href="editUser.php?id=<?= $user['id'] ?>" class="action-link edit-link">Editar</a>
-                            
-                            <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                <a href="users.php?delete_id=<?= $user['id'] ?>" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este usuario?')" 
-                                   class="action-link delete-link">Eliminar</a>
-                                   
-                                <?php if (!$user['is_admin']): ?>
-                                    <a href="users.php?make_admin_id=<?= $user['id'] ?>" 
-                                       onclick="return confirm('¿Hacer administrador a este usuario?')" 
-                                       class="action-link admin-link">Hacer Admin</a>
-                                <?php else: ?>
-                                    <a href="users.php?remove_admin_id=<?= $user['id'] ?>" 
-                                       onclick="return confirm('¿Quitar privilegios de administrador?')" 
-                                       class="action-link remove-admin-link">Quitar Admin</a>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </td>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user['name']) ?></td>
+                            <td><?= htmlspecialchars($user['email']) ?></td>
+                            <td>
+                                <?php if ($user['is_admin']): ?>
+                                    <span class="admin-badge"><i class="fas fa-user-shield"></i> Administrador</span>
+                                <?php else: ?>
+                                    <span class="user-badge"><i class="fas fa-user"></i> Usuario</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="actions">
+                                <a href="editUser.php?id=<?= $user['id'] ?>" class="action-link edit-link">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                
+                                <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                                    <a href="users.php?delete_id=<?= $user['id'] ?>" 
+                                       onclick="return confirm('¿Estás seguro de eliminar este usuario?')" 
+                                       class="action-link delete-link">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </a>
+                                       
+                                    <?php if (!$user['is_admin']): ?>
+                                        <a href="users.php?make_admin_id=<?= $user['id'] ?>" 
+                                           onclick="return confirm('¿Hacer administrador a este usuario?')" 
+                                           class="action-link admin-link">
+                                            <i class="fas fa-user-plus"></i> Hacer Admin
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="users.php?remove_admin_id=<?= $user['id'] ?>" 
+                                           onclick="return confirm('¿Quitar privilegios de administrador?')" 
+                                           class="action-link remove-admin-link">
+                                            <i class="fas fa-user-minus"></i> Quitar Admin
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($users)): ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 20px;">No hay usuarios registrados</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <footer>
-        <p>&copy; 2025 Sistema de Gestión</p>
+        <p>&copy; 2025 MaiProjects. Todos los derechos reservados.</p>
     </footer>
+
+    <script>
+        // Función para el dropdown del avatar
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarToggle = document.getElementById('avatar-dropdown-toggle');
+            const dropdownMenu = document.getElementById('user-dropdown-menu');
+
+            // Mostrar/ocultar el menú al hacer clic en el avatar
+            avatarToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+            
+            // Cerrar el menú si se hace clic fuera de él
+            document.addEventListener('click', function(e) {
+                if (!avatarToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

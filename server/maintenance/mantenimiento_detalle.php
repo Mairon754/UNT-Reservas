@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Usar una ruta fija desde la raíz del proyecto
-require_once $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas -1/db/db.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas/db/db.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
@@ -547,8 +547,6 @@ try {
     </style>
 </head>
 <body>
-    <!-- Incluir la navbar existente -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas -1/navbar.php'; ?>
     
     <!-- Main container -->
     <main class="main-container">
@@ -766,12 +764,6 @@ try {
                         <a href="../../pages/mantenimiento.php" class="back-button" style="display:block; text-align:center; margin-bottom:10px;">
                             <i class="fas fa-list"></i> Ver Todos los Mantenimientos
                         </a>
-                        
-                        <?php if ($maintenance['status'] !== 'completado'): ?>
-                        <a href="mantenimiento_nuevo.php" class="back-button" style="display:block; text-align:center; background-color:#27ae60;">
-                            <i class="fas fa-plus"></i> Reportar Nuevo Problema
-                        </a>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>

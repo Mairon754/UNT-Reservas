@@ -67,6 +67,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Recursos</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Estilos para la barra de navegación */
         .navbar {
@@ -213,78 +214,268 @@ try {
             margin-right: 20px;
         }
         
-        /* Estilos para la tabla de recursos */
-        .container {
-            padding: 20px;
+        /* Nuevos estilos para el contenido principal */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
         }
         
+        /* Estilos para el contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Estilos para títulos */
         h2 {
-            margin-bottom: 20px;
             color: #003366;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: #3498db;
+        }
+        
+        /* Estilos para botones */
+        button, .btn {
+            padding: 10px 18px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        button i, .btn i {
+            font-size: 16px;
+        }
+        
+        button:hover, .btn:hover {
+            background-color: #0051a0;
+            transform: translateY(-2px);
+        }
+        
+        #addRowBtn {
+            background-color: #2ecc71;
+            margin-bottom: 25px;
+        }
+        
+        #addRowBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        .saveBtn {
+            background-color: #2ecc71;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        
+        .saveBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        .deleteBtn {
+            background-color: #e74c3c;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        
+        .deleteBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Estilos para la tabla */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            margin-bottom: 30px;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
         }
         
         th {
             background-color: #003366;
-            ;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
         }
         
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
         }
         
-        button {
+        tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        /* Estilos para estados de recursos */
+        .status-select {
             padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
             border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-        
-        button:hover {
-            background-color: #45a049;
-        }
-        
-        .saveBtn {
-            background-color: #4CAF50;
-        }
-        
-        .deleteBtn {
-            background-color: #f44336;
-            margin-left: 5px;
-        }
-        
-        input, select {
-            padding: 6px 10px;
-            margin: 4px 0;
             width: 100%;
-            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         
+        .status-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .status-select option {
+            padding: 8px;
+        }
+        
+        /* Estilos para las acciones en la tabla */
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-links a {
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-link {
+            color: #003366;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .edit-link:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        
+        .delete-link {
+            color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .delete-link:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        /* Estilos para formularios e inputs */
+        input, select {
+            padding: 10px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Estilos para mensajes de respuesta */
+        #responseMessage {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilos para el footer */
         .footer {
             background-color: #003366;
             color: white;
             text-align: center;
-            padding: 10px;
-            margin-top: 30px;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         }
         
-        #responseMessage {
-            margin: 10px 0;
-            padding: 0;
+        /* Media queries para responsividad */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -327,38 +518,50 @@ try {
     </div>
 
     <div class="container">
-        <h2>Gestión de Recursos</h2>
-        <div id="responseMessage" class="content"></div>
-        <button id="addRowBtn" type="button">Agregar Recursos</button>
+        <h2><i class="fas fa-boxes"></i> Gestión de Recursos</h2>
+        <div id="responseMessage"></div>
+        <button id="addRowBtn" type="button"><i class="fas fa-plus-circle"></i> Agregar Recurso</button>
         
-        <table id="resourcesTable">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($resources as $resource): ?>
-                <tr>
-                    <td><?= htmlspecialchars($resource['name']) ?></td>
-                    <td><?= htmlspecialchars($resource['type']) ?></td>
-                    <td>
-                        <select name="status" data-id="<?= $resource['id'] ?>" class="resource-status" required>
-                            <option value="disponible" <?= $resource['status'] == 'disponible' ? 'selected' : '' ?>>Disponible</option>
-                            <option value="no disponible" <?= $resource['status'] == 'no disponible' ? 'selected' : '' ?>>No Disponible</option>
-                        </select>
-                    </td>
-                    <td>
-                        <a href="../server/task/editResource.php?id=<?= $resource['id'] ?>">Editar</a> |
-                        <a href="../pages/recursos.php?delete_id=<?= $resource['id'] ?>" onclick="return confirm('¿Estás seguro de eliminar este recurso?')">Eliminar</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table id="resourcesTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($resources as $resource): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($resource['name']) ?></td>
+                        <td><span class="resource-type"><?= htmlspecialchars($resource['type']) ?></span></td>
+                        <td>
+                            <select name="status" data-id="<?= $resource['id'] ?>" class="resource-status status-select" required>
+                                <option value="disponible" <?= $resource['status'] == 'disponible' ? 'selected' : '' ?>>Disponible</option>
+                                <option value="no disponible" <?= $resource['status'] == 'no disponible' ? 'selected' : '' ?>>No Disponible</option>
+                            </select>
+                        </td>
+                        <td class="action-links">
+                            <a href="../server/task/editResource.php?id=<?= $resource['id'] ?>" class="edit-link">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="../pages/recursos.php?delete_id=<?= $resource['id'] ?>" class="delete-link" 
+                               onclick="return confirm('¿Estás seguro de eliminar este recurso?')">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($resources)): ?>
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px;">No hay recursos disponibles</td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -408,19 +611,12 @@ try {
         function showMessage(message, isError = false) {
             var messageElement = document.getElementById('responseMessage');
             messageElement.innerHTML = message;
-            messageElement.style.padding = '10px';
-            messageElement.style.margin = '10px 0';
-            messageElement.style.backgroundColor = isError ? '#ffcccc' : '#ccffcc';
-            messageElement.style.border = '1px solid ' + (isError ? '#ff0000' : '#00cc00');
-            messageElement.style.borderRadius = '5px';
+            messageElement.className = isError ? 'error-message' : 'success-message';
             
             // Eliminar el mensaje después de 5 segundos
             setTimeout(function() {
                 messageElement.innerHTML = '';
-                messageElement.style.padding = '0';
-                messageElement.style.margin = '0';
-                messageElement.style.backgroundColor = 'transparent';
-                messageElement.style.border = 'none';
+                messageElement.className = '';
             }, 5000);
         }
 
@@ -429,17 +625,17 @@ try {
             var table = document.getElementById('resourcesTable').getElementsByTagName('tbody')[0];
             var newRow = table.insertRow();
             newRow.innerHTML = `
-                <td><input type="text" name="name" required></td>
-                <td><input type="text" name="type" required></td>
+                <td><input type="text" name="name" placeholder="Nombre del recurso" required></td>
+                <td><input type="text" name="type" placeholder="Tipo de recurso" required></td>
                 <td>
-                    <select name="status" required>
+                    <select name="status" class="status-select" required>
                         <option value="disponible">Disponible</option>
                         <option value="no disponible">No Disponible</option>
                     </select>
                 </td>
-                <td>
-                    <button type="button" class="saveBtn">Guardar</button>
-                    <button type="button" class="deleteBtn">Eliminar</button>
+                <td class="action-links">
+                    <button type="button" class="saveBtn"><i class="fas fa-save"></i> Guardar</button>
+                    <button type="button" class="deleteBtn"><i class="fas fa-times"></i> Cancelar</button>
                 </td>`;
                 
             newRow.querySelector('.deleteBtn').addEventListener('click', function() {

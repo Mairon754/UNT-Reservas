@@ -1,16 +1,20 @@
 <?php
 session_start();
 require_once 'db/db.php';
+
 // Si ya está logueado, redirigir al dashboard
 if (isset($_SESSION['user_id'])) {
     header('Location: pages/dashboard.php');
     exit();
 }
+
 $error_message = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recibir los datos del formulario
     $email = $_POST['email'];
     $password = $_POST['password'];
+
     // Validar si el usuario existe
     try {
         $db = Database::connect();
@@ -23,24 +27,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare($query);
         $stmt->execute([':email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
         // Verificar si el correo y la contraseña son correctos
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['name'] = $user['name'];
-           
+
             // Verificar si el rol es de administrador
-            $_SESSION['is_admin'] = ($user['role_name'] === 'admin') ? true : false;
-           
+            $_SESSION['is_admin'] = (isset($user['role_name']) && $user['role_name'] === 'admin') ? true : false;
+
             header('Location: pages/dashboard.php');
             exit();
         } else {
             $error_message = "Correo o contraseña incorrectos.";
         }
     } catch (PDOException $e) {
-        // Para debugging, descomenta la siguiente línea
-        // $error_message = "Error: " . $e->getMessage();
-        $error_message = "Error al conectar con la base de datos.";
+        // Mostrar detalles del error solo en desarrollo
+        if ($_SERVER['SERVER_NAME'] == 'localhost') {
+            $error_message = "Error SQL: " . $e->getMessage();
+        } else {
+            $error_message = "Error al conectar con la base de datos.";
+        }
     }
 }
 ?>
@@ -275,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Soporte para navegadores más antiguos o dispositivos que no soportan video */
         @media (prefers-reduced-motion: reduce), (max-width: 360px) {
             .video-background {
-                background-image: url('img/fallback-bg.jpg');
+                background-image: url('ass/fondo-login.png');
                 background-size: cover;
                 background-position: center;
             }
@@ -329,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Manejar errores de carga del video
             video.addEventListener('error', function() {
                 const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("img/fallback-bg.jpg")';
+                videoBackground.style.backgroundImage = 'url("ass/fondo-login.png")';
                 video.style.display = 'none';
             });
             
@@ -338,7 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 console.log('Reproducción automática no permitida:', error);
                 // Si no se puede reproducir automáticamente, mostrar imagen de respaldo
                 const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("img/fallback-bg.jpg")';
+                videoBackground.style.backgroundImage = 'url("ass/fondo-login.png")';
             });
         });
     </script>
