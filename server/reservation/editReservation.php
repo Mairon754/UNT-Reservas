@@ -173,113 +173,16 @@ try {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Reserva</title>
-    <link rel="stylesheet" href="../../css/pages.css">
-    <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar Reserva</title>
+<link rel="stylesheet" href="../../css/reservas.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="../../css/styles.css">
+
+
     <style>
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        .error {
-            background-color: #ffcccc;
-            border: 1px solid #ff0000;
-        }
-        .success {
-            background-color: #ccffcc;
-            border: 1px solid #00cc00;
-        }
-        .delete-success {
-            background-color: #ffecb3;
-            border: 1px solid #ff9800;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .button-cancel {
-            background-color: #f44336;
-        }
-        .button-cancel:hover {
-            background-color: #d32f2f;
-        }
-        .button-delete {
-            background-color: #ff9800;
-        }
-        .button-delete:hover {
-            background-color: #f57c00;
-        }
-        .delete-confirmation {
-            display: none;
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
-        .delete-confirmation p {
-            margin-bottom: 15px;
-            color: #856404;
-        }
-        .delete-confirmation .button-container {
-            justify-content: center;
-            gap: 10px;
-        }
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .back-button {
-            background-color: #607d8b;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-        .back-button:hover {
-            background-color: #455a64;
-        }
-        .reservation-details {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .reservation-details h3 {
-            margin-top: 0;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
+
     </style>
 </head>
 <body>
