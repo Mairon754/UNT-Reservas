@@ -12,46 +12,66 @@ $error_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recibir los datos del formulario
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = $_POST['email'] ?? ''; // Usamos el operador de fusión de null para evitar un error si no se ha enviado
+    $password = $_POST['password'] ?? ''; // Lo mismo para la contraseña
 
-    // Validar si el usuario existe
-    try {
-        $db = Database::connect();
-        // Consulta modificada para incluir el rol del usuario
-        $query = "SELECT u.*, r.role_name
-                 FROM usrs u
-                 LEFT JOIN user_roles ur ON u.id = ur.user_id
-                 LEFT JOIN roles r ON ur.role_id = r.id
-                 WHERE u.email = :email";
-        $stmt = $db->prepare($query);
-        $stmt->execute([':email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Validar si el correo y la contraseña están definidos
+    if (empty($email) || empty($password)) {
+        $error_message = "Por favor, ingrese correo y contraseña.";
+    } else {
+        // Validar si el usuario existe
+        try {
+            $db = Database::connect();
 
-        // Verificar si el correo y la contraseña son correctos
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['name'] = $user['name'];
+            // Consulta para obtener el usuario y su rol
+            $query = "SELECT u.id, u.email, u.name, u.password, r.role_name
+                      FROM usrs u
+                      LEFT JOIN user_roles ur ON u.id = ur.user_id
+                      LEFT JOIN roles r ON ur.role_id = r.id
+                      WHERE u.email = :email";
 
-            // Verificar si el rol es de administrador
-            $_SESSION['is_admin'] = (isset($user['role_name']) && $user['role_name'] === 'admin') ? true : false;
+            $stmt = $db->prepare($query);
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            header('Location: pages/dashboard.php');
-            exit();
-        } else {
-            $error_message = "Correo o contraseña incorrectos.";
-        }
-    } catch (PDOException $e) {
-        // Mostrar detalles del error solo en desarrollo
-        if ($_SERVER['SERVER_NAME'] == 'localhost') {
-            $error_message = "Error SQL: " . $e->getMessage();
-        } else {
+            // Verificar si el correo y la contraseña son correctos
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['name'] = $user['name'];
+
+                // Verificar si el rol es de administrador buscando en las tres tablas
+                $isAdmin = false;
+
+                // Verificar si el usuario tiene el rol 'admin' en user_roles
+                $query = "SELECT 1 
+                          FROM user_roles ur
+                          JOIN roles r ON ur.role_id = r.id
+                          WHERE ur.user_id = :user_id AND r.role_name = 'admin'";
+
+                $stmt = $db->prepare($query);
+                $stmt->execute([':user_id' => $user['id']]);
+                
+                if ($stmt->rowCount() > 0) {
+                    $isAdmin = true; // El usuario es administrador
+                }
+
+                // Asignar el permiso de administrador a la sesión
+                $_SESSION['is_admin'] = $isAdmin;
+
+                // Redirigir al dashboard si es administrador o al área correspondiente
+                header('Location: pages/dashboard.php');
+                exit();
+            } else {
+                $error_message = "Correo o contraseña incorrectos.";
+            }
+        } catch (PDOException $e) {
             $error_message = "Error al conectar con la base de datos.";
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -72,31 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             position: relative;
             background-color: #1a1a1a; /* Color de fondo por si hay espacios sin cubrir */
-        }
-        
-        /* Mejora en el video de fondo */
-        .video-background {
-            position: fixed; /* Fijo en lugar de absolute para mejor cobertura */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-        
-        .video-background video {
-            position: absolute;
-            min-width: 70%;
-            min-height: 70%;
-            width: 100%;
-            height: 100%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: contain; /* Importante: Asegura que el video cubra todo el contenedor */
-            object-position: center center; /* Centrar el enfoque del video */
-            max-width: none; /* Evita restricciones de ancho máximo */
         }
         
         /* Para pantallas muy anchas o muy altas */
@@ -292,18 +287,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: none;
             }
         }
+        
+        /* Estilos generales del carrusel */
+        .image-carousel {
+            position: absolute;
+            width: 100%;
+            height: 100vh; /* Ocupa toda la altura de la pantalla */
+            overflow: hidden; /* Esconde las imágenes que salen del área visible */
+        }
+
+        .carousel-images {
+            display: flex;
+            width: 600%; /* El ancho total es 6 veces el tamaño de una imagen */
+            animation: slide 30s infinite linear; /* 6 imágenes × 5 segundos = 30s total */
+        }
+
+        .carousel-item {
+            width: 16.666%; /* Cada imagen ocupa 1/6 del contenedor (100% ÷ 6) */
+            height: 100vh; /* Cada imagen ocupa toda la altura de la pantalla */
+            object-fit: cover; /* Asegura que la imagen cubra todo el área del contenedor */
+        }
+
+        /* Animación del carrusel */
+        @keyframes slide {
+            0%, 16.66% {
+                transform: translateX(0);
+            }
+            16.67%, 33.33% {
+                transform: translateX(-16.666%);
+            }
+            33.34%, 50% {
+                transform: translateX(-33.332%);
+            }
+            50.01%, 66.66% {
+                transform: translateX(-49.998%);
+            }
+            66.67%, 83.33% {
+                transform: translateX(-66.664%);
+            }
+            83.34%, 99.99% {
+                transform: translateX(-83.33%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
     </style>
 </head>
 <body>
-    <!-- Contenedor del video de fondo -->
-    <div class="video-background">
-        <video autoplay loop muted playsinline>
-            <!-- Puedes incluir múltiples formatos para compatibilidad -->
-            <source src="ass/video-login.mp4" type="video/mp4">
-            <!-- Mensaje para navegadores que no soportan el elemento video -->
-            Tu navegador no soporta videos HTML5.
-        </video>
+<div class="image-carousel">
+    <div class="carousel-images">
+        <img src="ass/1.png" alt="Imagen 1" class="carousel-item">
+        <img src="ass/2.png" alt="Imagen 2" class="carousel-item">
+        <img src="ass/3.png" alt="Imagen 3" class="carousel-item">
+        <img src="ass/4.png" alt="Imagen 4" class="carousel-item">
+        <img src="ass/5.png" alt="Imagen 5" class="carousel-item">
+        <img src="ass/6.png" alt="Imagen 6" class="carousel-item">
     </div>
+</div>
     
     <!-- Overlay para mejorar legibilidad -->
     <div class="overlay"></div>
@@ -318,8 +360,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="error-message"><?= $error_message ?></div>
         <?php endif; ?>
         <form action="login.php" method="POST">
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" required placeholder="nombre@ejemplo.com">
+            <label for="email">Nombre de Usuario:</label>
+            <input type="text" id="email" name="email" required placeholder="Ingresa tu nombre de usuario">
            
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
@@ -329,26 +371,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
     </div>
     
-    <script>
-        // Código JavaScript para asegurar que el video se cargue correctamente
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('video');
-            
-            // Manejar errores de carga del video
-            video.addEventListener('error', function() {
-                const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("ass/fondo-login.png")';
-                video.style.display = 'none';
-            });
-            
-            // Forzar reproducción en dispositivos móviles
-            video.play().catch(function(error) {
-                console.log('Reproducción automática no permitida:', error);
-                // Si no se puede reproducir automáticamente, mostrar imagen de respaldo
-                const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("ass/fondo-login.png")';
-            });
-        });
-    </script>
 </body>
 </html>

@@ -645,7 +645,7 @@ try {
                                 <a href="editUser.php?id=<?= $user['id'] ?>" class="action-link edit-link">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                
+                                 
                                 <?php if ($user['id'] != $_SESSION['user_id']): ?>
                                     <a href="users.php?delete_id=<?= $user['id'] ?>" 
                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')" 

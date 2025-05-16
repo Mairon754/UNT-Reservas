@@ -56,30 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #1a1a1a; /* Color de fondo por si hay espacios sin cubrir */
         }
         
-        /* Mejora en el video de fondo */
-        .video-background {
-            position: fixed; /* Fijo en lugar de absolute para mejor cobertura */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-        
-        .video-background video {
-            position: absolute;
-            min-width: 70%;
-            min-height: 70%;
-            width: 100%;
-            height: 100%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: contain; /* Importante: Asegura que el video cubra todo el contenedor */
-            object-position: center center; /* Centrar el enfoque del video */
-            max-width: none; /* Evita restricciones de ancho máximo */
-        }
         
         /* Para pantallas muy anchas o muy altas */
         @media (min-aspect-ratio: 16/9) {
@@ -253,16 +229,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 padding: 30px 20px;
                 width: 85%;
             }
-            
-            /* Ajustar posición del video en móviles */
-            .video-background video {
-                position: fixed;
-                left: 50%;
-                transform: translateX(-50%);
-                width: auto;
-                height: 100%;
-            }
-        }
         
         /* Optimización para tablets */
         @media (min-width: 481px) and (max-width: 1024px) {
@@ -273,30 +239,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        /* Soporte para navegadores más antiguos o dispositivos que no soportan video */
-        @media (prefers-reduced-motion: reduce), (max-width: 360px) {
-            .video-background {
-                background-image: url('img/fallback-bg.jpg');
-                background-size: cover;
-                background-position: center;
+
+        /* Estilos generales del carrusel */
+        .image-carousel {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Ocupa toda la altura de la pantalla */
+            overflow: hidden; /* Esconde las imágenes que salen del área visible */
+        }
+
+        .carousel-images {
+            display: flex;
+            width: 600%; /* El ancho total es 6 veces el tamaño de una imagen */
+            animation: slide 30s infinite linear; /* 6 imágenes × 5 segundos = 30s total */
+        }
+
+        .carousel-item {
+            width: 16.666%; /* Cada imagen ocupa 1/6 del contenedor (100% ÷ 6) */
+            height: 100vh; /* Cada imagen ocupa toda la altura de la pantalla */
+            object-fit: cover; /* Asegura que la imagen cubra todo el área del contenedor */
+        }
+
+        /* Animación del carrusel */
+        @keyframes slide {
+            0%, 16.66% {
+                transform: translateX(0);
             }
-            
-            .video-background video {
-                display: none;
+            16.67%, 33.33% {
+                transform: translateX(-16.666%);
+            }
+            33.34%, 50% {
+                transform: translateX(-33.332%);
+            }
+            50.01%, 66.66% {
+                transform: translateX(-49.998%);
+            }
+            66.67%, 83.33% {
+                transform: translateX(-66.664%);
+            }
+            83.34%, 99.99% {
+                transform: translateX(-83.33%);
+            }
+            100% {
+                transform: translateX(0);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Contenedor del video de fondo -->
-    <div class="video-background">
-        <video autoplay loop muted playsinline>
-            <!-- Puedes incluir múltiples formatos para compatibilidad -->
-            <source src="ass/video-login.mp4" type="video/mp4">
-            <!-- Mensaje para navegadores que no soportan el elemento video -->
-            Tu navegador no soporta videos HTML5.
-        </video>
+<div class="image-carousel">
+    <div class="carousel-images">
+        <img src="ass/1.png" alt="Imagen 1" class="carousel-item">
+        <img src="ass/2.png" alt="Imagen 2" class="carousel-item">
+        <img src="ass/3.png" alt="Imagen 3" class="carousel-item">
+        <img src="ass/4.png" alt="Imagen 4" class="carousel-item">
+        <img src="ass/5.png" alt="Imagen 5" class="carousel-item">
+        <img src="ass/6.png" alt="Imagen 6" class="carousel-item">
     </div>
+</div>
     
     <!-- Overlay para mejorar legibilidad -->
     <div class="overlay"></div>
@@ -329,26 +329,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión aquí</a></p>
     </div>
     
-    <script>
-        // Código JavaScript para asegurar que el video se cargue correctamente
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('video');
-            
-            // Manejar errores de carga del video
-            video.addEventListener('error', function() {
-                const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("img/fallback-bg.jpg")';
-                video.style.display = 'none';
-            });
-            
-            // Forzar reproducción en dispositivos móviles
-            video.play().catch(function(error) {
-                console.log('Reproducción automática no permitida:', error);
-                // Si no se puede reproducir automáticamente, mostrar imagen de respaldo
-                const videoBackground = document.querySelector('.video-background');
-                videoBackground.style.backgroundImage = 'url("img/fallback-bg.jpg")';
-            });
-        });
-    </script>
+
 </body>
 </html>

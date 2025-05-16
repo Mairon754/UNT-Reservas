@@ -200,13 +200,13 @@ try {
         }
         
         /* Maintenance cards - horizontal layout with more space */
-        .maintenance-cards {
-            .maintenance-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Exactamente 2 tarjetas por fila */
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
+        
+        /*.maintenance-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+        }*/
         
         .maintenance-card {
             background-color: var(--card-bg);
@@ -483,12 +483,12 @@ try {
             }
             
             .maintenance-cards {
-                grid-template-columns: 1fr; /* Una sola columna en móviles */
+                grid-template-columns: 1fr; 
             }
             
             .maintenance-card {
-                min-height: auto; /* Sin altura mínima en móviles */
-            }
+                min-height: auto;} /* Sin altura mínima en móviles */
+            
             .reservations-table {
                 font-size: 0.9rem;
             }
