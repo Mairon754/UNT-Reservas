@@ -1,5 +1,19 @@
 /* Estilos para el sistema de reservas */
 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fb;
+    color: #333;
+    margin: 0;
+}
+
+main {
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
 .calendar-container {
     display: flex;
     flex-wrap: wrap;
