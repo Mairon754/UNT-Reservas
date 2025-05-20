@@ -40,11 +40,11 @@ class Database {
         if (self::$db == null) {
             try {
                 // Usar las variables de entorno de Railway
-                $host = getenv('RAILWAY_PRIVATE_DOMAIN') ?: 'hopper.proxy.rlwy.net';
-                $port = getenv('PGPORT') ?: '31530'; 
-                $dbname = getenv('PGDATABASE') ?: 'railway';
-                $username = getenv('PGUSER') ?: 'postgres';
-                $password = getenv('POSTGRES_PASSWORD') ?: 'JmvzgQrjzrFXEZiqofXsmWqUalCJYSLb';
+                $host = 'hopper.proxy.rlwy.net';
+                $port = '31530';
+                $dbname = 'railway';
+                $username = 'postgres';
+                $password = '221151029';
                 
                 // Crear la cadena de conexión
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
