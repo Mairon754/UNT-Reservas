@@ -182,7 +182,7 @@ try {
                             </div>
                             
                             <div class="maintenance-card-footer">
-                                <a href="/project-UNT-reservas/server/maintenance/mantenimiento_detalle.php?id=<?php echo $request['id']; ?>" class="card-btn btn-primary">Ver Detalles</a>
+                                <a href="/server/maintenance/mantenimiento_detalle.php?id=<?php echo $request['id']; ?>" class="card-btn btn-primary">Ver Detalles</a>
                             </div>
                         </div>
                     <?php endforeach; ?>
