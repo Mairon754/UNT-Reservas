@@ -45,7 +45,7 @@ class Database {
                 // Credenciales de la base de datos en Railway
                 $dsn = 'pgsql:host=hopper.proxy.rlwy.net;port=31530;dbname=railway'; // Asegúrate de que el nombre de la base de datos sea correcto
                 $username = 'postgres'; // Usuario proporcionado
-                $password = '221151029'; // Contraseña correcta
+                $password = 'JmvzgQrjzrFXEZiqofXsmWqUalCJYSLb'; // Contraseña correcta
                 self::$db = new PDO($dsn, $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
