@@ -43,7 +43,7 @@ class Database {
                 // Usar la URL pública proporcionada por Railway
                 $dsn = 'pgsql:host=hopper.proxy.rlwy.net;port=31530;dbname=railway';
                 $username = 'postgres'; // Usuario 'postgres'
-                $password = 'JmvzgQrjzrFXEZiqofXsmWqUalCJYSLb'; // Contraseña proporcionada
+                $password = '221151029'; // Contraseña proporcionada
                 self::$db = new PDO($dsn, $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
