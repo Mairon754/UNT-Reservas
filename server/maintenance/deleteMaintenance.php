@@ -19,7 +19,7 @@ if (isset($_GET['delete_id'])) {
         
         if ($result) {
             // Redirigir a la página de mantenimiento para actualizar la lista
-            header("Location: /project-UNT-reservas/pages/mantenimiento.php?msg=deleted");
+            header("Location: /pages/mantenimiento.php?msg=deleted");
         } else {
             // Mensaje de error si no se pudo eliminar
             header("Location: ../../pages/mantenimiento.php?error=delete_failed");

@@ -19,7 +19,7 @@ if (isset($_GET['delete_id'])) {
         
         if ($result) {
             // Redirigir a la página de recursos para actualizar la lista
-            header("Location: /project-UNT-reservas/pages/recursos.php?msg=deleted");
+            header("Location: ../../pages/recursos.php?msg=deleted");
         } else {
             // Mensaje de error si no se pudo eliminar
             header("Location: ../../pages/recursos.php?error=delete_failed");
