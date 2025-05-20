@@ -1,7 +1,7 @@
 <?php
 // db.php: Conexión a la base de datos PostgreSQL
 
-/*class Database {
+class Database {
     private static $db;
 
     // Conectar a la base de datos
@@ -20,40 +20,6 @@
                 } else {
                     die("Error al conectar con la base de datos.");
                 }
-            }
-        }
-        return self::$db;
-    }
-}*/
-
-
-
-// db.php: Conexión a la base de datos PostgreSQL en Railway
-
-
-// db.php: Conexión a la base de datos PostgreSQL en Railway
-
-class Database {
-    private static $db;
-    // Conectar a la base de datos
-    public static function connect() {
-        if (self::$db == null) {
-            try {
-                // Usar las variables de entorno de Railway
-                $host = 'hopper.proxy.rlwy.net';
-                $port = '31530';
-                $dbname = 'railway';
-                $username = 'postgres';
-                $password = '221151029';
-                
-                // Crear la cadena de conexión
-                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
-                
-                // Conectar a la base de datos
-                self::$db = new PDO($dsn, $username, $password);
-                self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                die("Error de conexión: " . $e->getMessage());
             }
         }
         return self::$db;
