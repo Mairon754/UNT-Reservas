@@ -33,6 +33,9 @@
 
 // db.php: Conexión a la base de datos PostgreSQL en Railway
 
+require_once __DIR__ . '/vendor/autoload.php';
+Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
 class Database {
     private static $db;
 
@@ -40,17 +43,12 @@ class Database {
     public static function connect() {
         if (self::$db == null) {
             try {
-                // Leer las variables de entorno
+                // Usar las variables de entorno
                 $host = getenv('RAILWAY_TCP_PROXY_DOMAIN');  // 'hopper.proxy.rlwy.net'
                 $port = getenv('RAILWAY_TCP_PROXY_PORT');    // '31530'
                 $dbname = getenv('POSTGRES_DB');             // 'railway'
                 $username = getenv('POSTGRES_USER');         // 'postgres'
                 $password = getenv('POSTGRES_PASSWORD');     // '221151029'
-
-                // Depuración para verificar que las variables están correctamente configuradas
-                if (empty($host) || empty($port)) {
-                    die("Las variables de entorno no están configuradas correctamente.");
-                }
 
                 // Crear la cadena de conexión
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
@@ -59,13 +57,11 @@ class Database {
                 self::$db = new PDO($dsn, $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                // Mostrar error si la conexión falla
                 die("Error de conexión: " . $e->getMessage());
             }
         }
         return self::$db;
     }
 }
-
 
 ?>
