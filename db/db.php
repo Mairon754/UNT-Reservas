@@ -35,21 +35,20 @@
 
 class Database {
     private static $db;
-
     // Conectar a la base de datos
     public static function connect() {
         if (self::$db == null) {
             try {
-                // Usar las variables de entorno
-                $host = 'hopper.proxy.rlwy.net';  // 'hopper.proxy.rlwy.net'
-                $port = '31530';    // '31530'
-                $dbname = 'railway';             // 'railway'
-                $username = 'postgres';         // 'postgres'
-                $password =  '221151029';
-
+                // Usar las variables de entorno de Railway
+                $host = getenv('RAILWAY_TCP_PROXY_DOMAIN') ?: 'hopper.proxy.rlwy.net';
+                $port = getenv('RAILWAY_TCP_PROXY_PORT') ?: '31530';
+                $dbname = getenv('PGDATABASE') ?: 'railway';
+                $username = getenv('PGUSER') ?: 'postgres';
+                $password = getenv('POSTGRES_PASSWORD') ?: '221151029';
+                
                 // Crear la cadena de conexión
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
-
+                
                 // Conectar a la base de datos
                 self::$db = new PDO($dsn, $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -60,5 +59,4 @@ class Database {
         return self::$db;
     }
 }
-
 ?>
