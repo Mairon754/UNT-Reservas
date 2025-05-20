@@ -1,7 +1,7 @@
 <?php
 // db.php: Conexión a la base de datos PostgreSQL
 
-class Database {
+/*class Database {
     private static $db;
 
     // Conectar a la base de datos
@@ -24,5 +24,36 @@ class Database {
         }
         return self::$db;
     }
+}*/
+
+
+// db.php: Conexión a la base de datos PostgreSQL en Railway
+
+class Database {
+    private static $db;
+
+    // Conectar a la base de datos
+    public static function connect() {
+        if (self::$db == null) {
+            try {
+                // Credenciales de la base de datos en Railway
+                $dsn = 'pgsql:host=postgres.railway.internal;port=5432;dbname=railway'; // Utilizando los valores proporcionados
+                $username = 'postgres'; // Usuario proporcionado
+                $password = 'JmvzgQrjzrFXEZiqofXsmmWQalCJYSLb'; // Contraseña proporcionada
+                self::$db = new PDO($dsn, $username, $password);
+                self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                // Mostrar detalles del error solo en desarrollo
+                if ($_SERVER['SERVER_NAME'] == 'localhost') {
+                    die("Error de conexión: " . $e->getMessage() . " | " . $e->getCode());
+                } else {
+                    die("Error al conectar con la base de datos.");
+                }
+            }
+        }
+        return self::$db;
+    }
 }
+
+
 ?>
