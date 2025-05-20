@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/project-UNT-reservas/db/db.php';
+require_once '../db/db.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
