@@ -27,11 +27,6 @@
 }*/
 
 
-// db.php: Conexión a la base de datos PostgreSQL en Railway
-
-// db.php: Conexión a la base de datos PostgreSQL en Railway
-
-// db.php: Conexión a la base de datos PostgreSQL en Railway
 
 // db.php: Conexión a la base de datos PostgreSQL en Railway
 
@@ -42,21 +37,19 @@ class Database {
     public static function connect() {
         if (self::$db == null) {
             try {
-                // Credenciales de la base de datos en Railway
-                $dsn = 'pgsql:host=hopper.proxy.rlwy.net;port=31530;dbname=railway'; // Asegúrate de que el nombre de la base de datos sea correcto
-                $username = 'postgres'; // Usuario proporcionado
-                $password = 'JmvzgQrjzrFXEZiqofXsmWqUalCJYSLb'; // Contraseña correcta
+                // Usar el dominio público de Railway en lugar de 'postgres.railway.internal'
+                $dsn = 'pgsql:host=hopper.proxy.rlwy.net;port=31530;dbname=railway'; // Usar 'hopper.proxy.rlwy.net' y puerto '31530'
+                $username = 'postgres'; // Usuario 'postgres'
+                $password = 'JmvzgQrjzrFXEZiqofXsmmWqUalCJYSLb'; // Contraseña que tienes en las variables de entorno
                 self::$db = new PDO($dsn, $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                // Mostrar el error
-                die("Error de conexión: " . $e->getMessage()); // Para ver el mensaje completo del error
+                // Mostrar el error completo
+                die("Error de conexión: " . $e->getMessage());
             }
         }
         return self::$db;
     }
 }
-
-
 
 ?>
