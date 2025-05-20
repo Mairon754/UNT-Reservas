@@ -75,42 +75,7 @@ try {
     </style>
 </head>
 <body>
-    <!-- Navbar con rutas fijas -->
-    <div class="navbar">
-        <div class="nav-links">
-            <div class="logo">
-                <img src="../ass/logoUNT.png" class="logo-image">
-            </div>
-            <a href="../pages/dashboard.php">Dashboard</a>
-            <?php if ($isAdmin): ?>
-            <a href="../pages/recursos.php">Recursos</a>
-            <?php endif; ?>
-            <a href="../pages/reservas.php">Reservas</a>
-            <a href="../pages/mantenimiento.php">Mantenimiento</a>
-            <?php if ($isAdmin): ?>
-            <a href="../admin/users.php">Usuarios</a>
-            <?php endif; ?>
-        </div>
-        <div class="user-info">
-            <span class="user-welcome">Bienvenido, <?php echo $userName; ?>!</span>
-        </div>
-        <div class="user-profile">
-            <div class="user-avatar" id="avatar-dropdown-toggle">
-                <span><?= substr($userName, 0, 1) ?></span>
-            </div>
-            <div class="dropdown-menu" id="user-dropdown-menu">
-                <div class="dropdown-header">
-                    <strong><?= htmlspecialchars($userName) ?></strong>
-                    <p><?= htmlspecialchars($userEmail) ?></p>
-                    <p class="user-role"><?= htmlspecialchars($userRole) ?></p>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a href="../pages/profile.php">Mi Perfil</a>
-                <a href="../pages/settings.php">Configuración</a>
-                <a href="../pages/logout.php">Cerrar sesión</a>
-            </div>
-        </div>
-    </div>
+<?php include '../navbar.php'; ?>
 
     <div class="container">
         <h2><i class="fas fa-boxes"></i> Gestión de Recursos</h2>
