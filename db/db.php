@@ -33,9 +33,6 @@
 
 // db.php: Conexión a la base de datos PostgreSQL en Railway
 
-require_once __DIR__ . '/vendor/autoload.php';
-Dotenv\Dotenv::createImmutable(__DIR__)->load();
-
 class Database {
     private static $db;
 
