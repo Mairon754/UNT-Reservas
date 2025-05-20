@@ -285,7 +285,7 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/') !== false) {
             <a href="<?= $basePath ?>/reservas.php">Reservas</a>
             <a href="<?= $basePath ?>/mantenimiento.php">Mantenimiento</a>
             <?php if ($isAdmin): ?>
-            <a href="/project-UNT-reservas/admin/users.php">Usuarios</a>
+            <a href="/admin/users.php">Usuarios</a>
             <?php endif; ?>
         </div>
         <br><br>
