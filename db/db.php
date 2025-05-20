@@ -29,6 +29,8 @@
 
 // db.php: Conexión a la base de datos PostgreSQL en Railway
 
+// db.php: Conexión a la base de datos PostgreSQL en Railway
+
 class Database {
     private static $db;
 
@@ -37,7 +39,7 @@ class Database {
         if (self::$db == null) {
             try {
                 // Credenciales de la base de datos en Railway
-                $dsn = 'pgsql:host=postgres.railway.internal;port=5432;dbname=railway'; // Utilizando los valores proporcionados
+                $dsn = 'pgsql:host=hopper.proxy.rlwy.net;port=31530;dbname=railway'; // Cambia por los valores correctos
                 $username = 'postgres'; // Usuario proporcionado
                 $password = 'JmvzgQrjzrFXEZiqofXsmmWQalCJYSLb'; // Contraseña proporcionada
                 self::$db = new PDO($dsn, $username, $password);
@@ -54,6 +56,7 @@ class Database {
         return self::$db;
     }
 }
+
 
 
 ?>
