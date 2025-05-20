@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Usar una ruta fija desde la raíz del proyecto
-require_once 'Location: ../../db/db.php';
+require_once '../../db/db.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
