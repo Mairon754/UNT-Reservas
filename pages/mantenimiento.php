@@ -76,13 +76,11 @@ try {
 <link rel="stylesheet" href="../css/pages.css">
 <link rel="stylesheet" href="css/navbar-global.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
 
-    </style>
 </head>
 <body>
 
-
+<?php include '../navbar.php'; ?>
     <div class="container">
         <h2><i class="fas fa-tools"></i> Solicitudes de Mantenimiento</h2>
 
