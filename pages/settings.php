@@ -213,6 +213,7 @@ require_once '../navbar.php';
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!--<link rel="stylesheet" href="../css/styles.css">-->
 <link rel="stylesheet" href="../css/pages.css">
+<link rel="stylesheet" href="css/navbar-global.css">
 
 <div class="container" class="content">
     <div class="settings-container">

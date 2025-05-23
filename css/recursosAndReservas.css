@@ -1,26 +1,63 @@
+/* ========================================
+   RECURSOS Y RESERVAS CSS - VERSIÓN ACTUALIZADA
+   ======================================== */
+
+/* Variables CSS */
+:root {
+    --primary-color: #003366;
+    --secondary-color: #004080;
+    --accent-color: #0066cc;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --info-color: #3498db;
+    --card-bg: #ffffff;
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f7fa;
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
-/* Estilos para el contenedor principal */
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
 .container {
     max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+    margin: 2rem auto;
+    padding: 0 2rem;
 }
 
-/* Estilos para títulos */
-h2 {
-    color: #003366;
-    margin-bottom: 25px;
+/* ========================================
+   TÍTULOS
+   ======================================== */
+h1, h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
     font-weight: 700;
-    font-size: 28px;
     position: relative;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2rem;
 }
 
 h2::after {
@@ -28,72 +65,131 @@ h2::after {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100px;
-    height: 3px;
-    background-color: #3498db;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 2px;
 }
 
-/* Estilos para botones */
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 2px;
+}
+
+/* ========================================
+   BOTONES PRINCIPALES
+   ======================================== */
 button, .btn {
-    padding: 10px 18px;
-    background-color: #003366;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before, .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+button:hover::before, .btn:hover::before {
+    left: 100%;
 }
 
 button i, .btn i {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 button:hover, .btn:hover {
-    background-color: #0051a0;
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 51, 102, 0.4);
 }
 
 #addRowBtn {
-    background-color: #2ecc71;
-    margin-bottom: 25px;
+    background: linear-gradient(135deg, var(--success-color) 0%, #27ae60 100%);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
 }
 
 #addRowBtn:hover {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
 }
 
 .saveBtn {
-    background-color: #2ecc71;
-    padding: 8px 15px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--success-color) 0%, #27ae60 100%);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
 }
 
 .saveBtn:hover {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
 }
 
 .deleteBtn {
-    background-color: #e74c3c;
-    padding: 8px 15px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .deleteBtn:hover {
-    background-color: #c0392b;
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
 }
 
-/* Estilos para la tabla */
+/* ========================================
+   TABLA PRINCIPAL
+   ======================================== */
 .table-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background: linear-gradient(135deg, var(--card-bg) 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.03) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(25px, -25px);
 }
 
 table {
@@ -102,156 +198,536 @@ table {
 }
 
 th {
-    background-color: #003366;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
-    padding: 15px;
+    padding: 1.2rem;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--info-color) 100%);
 }
 
 td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
 }
 
 tr:last-child td {
     border-bottom: none;
 }
 
-tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-tr:hover {
-    background-color: rgba(52, 152, 219, 0.05);
-}
-
-/* Estilos para estados de recursos */
-.status-select {
-    padding: 8px 12px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 14px;
+tbody tr {
     transition: all 0.3s ease;
+    position: relative;
+}
+
+tbody tr:nth-child(even) {
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+}
+
+tbody tr:hover {
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.05) 0%, rgba(0, 51, 102, 0.08) 100%);
+    transform: scale(1.005);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   STATUS SELECTS
+   ======================================== */
+.status-select {
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 35px;
 }
 
 .status-select:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--info-color);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 .status-select option {
-    padding: 8px;
+    padding: 10px;
+    background-color: white;
+    color: #333;
 }
 
-/* Estilos para las acciones en la tabla */
+/* ========================================
+   ACTION LINKS
+   ======================================== */
 .action-links {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .action-links a {
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-links a:hover::before {
+    left: 100%;
 }
 
 .edit-link {
-    color: #003366;
-    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.1) 0%, rgba(0, 51, 102, 0.05) 100%);
+    border-color: rgba(0, 51, 102, 0.3);
 }
 
 .edit-link:hover {
-    background-color: rgba(52, 152, 219, 0.2);
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.2) 0%, rgba(0, 51, 102, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
 }
 
 .delete-link {
-    color: #e74c3c;
-    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+    border-color: rgba(231, 76, 60, 0.3);
 }
 
 .delete-link:hover {
-    background-color: rgba(231, 76, 60, 0.2);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
-/* Estilos para formularios e inputs */
+/* ========================================
+   FORMULARIOS E INPUTS
+   ======================================== */
 input, select {
-    padding: 10px 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
     width: 100%;
-    font-size: 14px;
+    font-size: 1rem;
     transition: all 0.3s ease;
-    background-color: white;
+    background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+    box-sizing: border-box;
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+    background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+    transform: translateY(-2px);
 }
 
-/* Estilos para mensajes de respuesta */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* ========================================
+   MENSAJES DE RESPUESTA
+   ======================================== */
 #responseMessage {
     padding: 0;
     margin: 0;
     overflow: hidden;
     transition: all 0.3s ease;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 .success-message {
-    background-color: #d4edda;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border: 2px solid #c3e6cb;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--success-color);
+    position: relative;
+    font-weight: 500;
 }
 
 .error-message {
-    background-color: #f8d7da;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
     color: #721c24;
-    border: 1px solid #f5c6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border: 2px solid #f5c6cb;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--danger-color);
+    position: relative;
+    font-weight: 500;
 }
 
-/* Estilos para el footer */
+.success-message::before, .error-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(10px, -10px);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
 .footer {
-    background-color: #003366;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 3rem;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-/* Media queries para responsividad */
-@media (max-width: 992px) {
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--info-color) 100%);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
     .container {
-        padding: 0 15px;
+        padding: 0 1.5rem;
+        margin: 1.5rem auto;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+        margin-bottom: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.8rem;
+    }
+    
+    th, td {
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+    
+    button, .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    #addRowBtn {
+        margin-bottom: 1.5rem;
+    }
+    
+    input, select, .status-select {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+    }
+    
+    .footer {
+        padding: 1.5rem;
+        margin-top: 2.5rem;
     }
 }
 
+/* Mobile Large */
 @media (max-width: 768px) {
+    .container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+    
     .table-container {
         overflow-x: auto;
+        border-radius: 12px;
+    }
+    
+    table {
+        min-width: 700px;
+    }
+    
+    th, td {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .action-links {
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+    }
+    
+    .action-links a {
+        text-align: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    
+    button, .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    #addRowBtn {
+        margin-bottom: 1.2rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .saveBtn, .deleteBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    input, select, .status-select {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+    
+    .success-message, .error-message {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+    
+    .footer {
+        padding: 1.2rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
     }
 }
 
+/* Mobile Small */
 @media (max-width: 576px) {
+    .container {
+        padding: 0 0.8rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.2rem;
+    }
+    
     h2 {
-        font-size: 24px;
+        font-size: 1.4rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    h1::after, h2::after {
+        height: 3px;
+    }
+    
+    h1::after {
+        width: 80px;
+    }
+    
+    h2::after {
+        width: 60px;
+    }
+    
+    table {
+        min-width: 600px;
+        font-size: 0.85rem;
+    }
+    
+    th, td {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    th {
+        font-size: 0.8rem;
+    }
+    
+    .action-links a {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+    
+    button, .btn {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+    
+    .saveBtn, .deleteBtn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    
+    input, select, .status-select {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    
+    .status-select {
+        background-size: 14px;
+        padding-right: 30px;
+    }
+    
+    .success-message, .error-message {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    
+    .footer {
+        padding: 1rem;
+        margin-top: 1.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    table {
+        min-width: 500px;
+        font-size: 0.8rem;
+    }
+    
+    th, td {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    th {
+        font-size: 0.75rem;
+    }
+    
+    .action-links a {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    
+    button, .btn {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+    
+    .saveBtn, .deleteBtn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
+    input, select, .status-select {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+        border-radius: 5px;
+    }
+    
+    .status-select {
+        background-size: 12px;
+        padding-right: 25px;
+    }
+    
+    .success-message, .error-message {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 5px;
+    }
+    
+    .footer {
+        padding: 0.8rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+    
+    h1::after {
+        width: 60px;
+        height: 2px;
+    }
+    
+    h2::after {
+        width: 40px;
+        height: 2px;
     }
 }

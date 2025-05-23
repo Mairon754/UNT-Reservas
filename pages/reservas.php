@@ -50,6 +50,7 @@ $nombreMes = $meses[$month];
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema de Reservas</title>
 <link rel="stylesheet" href="../css/reservas.css">
+<link rel="stylesheet" href="css/navbar-global.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <?php include '../navbar.php'; ?>
 </head>

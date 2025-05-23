@@ -1,149 +1,22 @@
-/* Estilos para la barra de navegación */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #003366;
-    color: white;
-    padding: 0px 20px;
-    box-shadow: 0 2px 4px rgba(12, 58, 241, 0.76);
-    min-height: 70px;
+/* ========================================
+   USER CSS - VERSIÓN ACTUALIZADA
+   ======================================== */
+
+/* Variables CSS */
+:root {
+    --primary-color: #003366;
+    --secondary-color: #004080;
+    --accent-color: #0066cc;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --info-color: #3498db;
+    --card-bg: #ffffff;
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.nav-links {
-    display: flex;
-    flex: 1; /* Esto hará que ocupe todo el espacio disponible */
-    gap: 20px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    height: 70px;        /* Misma altura que navbar min-height */
-    display: flex;
-    align-items: center;  /* Centra el texto verticalmente */
-    transition: background-color 0.3s;
-    font-weight: bold;
-}
-
-.nav-links a:hover {
-    background-color: #555;
-}
-
-/* Perfil de usuario en la navbar */
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    position: relative;
-}
-
-.user-avatar {
-    width: 55px;
-    height: 55px;
-    background-color: #3498db;
-    border-radius: 60%;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 22px;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    margin-right: 10px;
-}
-
-.user-welcome {
-    font-size: 22px;
-    color: white;
-    font-weight: bold;
-    margin-right: 5px;
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    min-width: 200px;
-    z-index: 1000;
-    display: none; /* Inicialmente oculto */
-}
-
-.dropdown-menu.show {
-    display: block; /* Se muestra cuando tiene la clase 'show' */
-}
-
-.dropdown-header {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #3498db;
-}
-
-.dropdown-header strong {
-    display: block;
-    font-size: 16px;
-    color: #ffe;
-    font-weight: bold;
-}
-
-.dropdown-header p {
-    margin: 5px 0 0;
-    font-size: 14px;
-    color: #fff;
-    font-weight: bold;
-}
-
-.user-role {
-    color: #e8f4fc;
-    font-weight: 500;
-    margin-top: 5px;
-    background-color: #2580b3;
-    padding: 3px 8px;
-    border-radius: 10px;
-    display: inline-block;
-    font-size: 12px;
-}
-
-.dropdown-divider {
-    height: 1px;
-    background-color: #ffe;
-    margin: 0;
-}
-
-.dropdown-menu a {
-    display: block;
-    padding: 12px 15px;
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f8f9fa;
-}
-
-.logo-image {
-    width: 100px;
-    height: auto;
-}
-
-.logo {
-    margin-right: 20px;
-}
-
-/* Nuevos estilos para el contenido principal */
+/* Reset y configuración base */
 * {
     margin: 0;
     padding: 0;
@@ -155,23 +28,35 @@ body {
     background-color: #f5f7fa;
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
-/* Estilos para el contenedor principal */
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
 .container {
     max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+    margin: 2rem auto;
+    padding: 0 2rem;
 }
 
-/* Estilos para títulos */
-h2 {
-    color: #003366;
-    margin-bottom: 25px;
+/* ========================================
+   TÍTULOS
+   ======================================== */
+h1, h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
     font-weight: 700;
-    font-size: 28px;
     position: relative;
     padding-bottom: 10px;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
 }
 
 h2::after {
@@ -179,25 +64,28 @@ h2::after {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100px;
-    height: 3px;
-    background-color: #3498db;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 2px;
 }
 
 h3 {
-    color: #003366;
-    margin: 25px 0 15px;
+    color: var(--primary-color);
+    margin: 1.5rem 0 1rem;
     font-weight: 600;
-    font-size: 22px;
+    font-size: 1.4rem;
 }
 
-/* Estilos para la tabla */
+/* ========================================
+   TABLA DE USUARIOS
+   ======================================== */
 .table-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
 }
 
 table {
@@ -206,333 +94,458 @@ table {
 }
 
 th {
-    background-color: #003366;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
-    padding: 15px;
+    padding: 1.2rem;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
 }
 
 td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
 }
 
 tr:last-child td {
     border-bottom: none;
 }
 
-tr:nth-child(even) {
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
-tr:hover {
-    background-color: rgba(52, 152, 219, 0.05);
+tbody tr:hover {
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.02) 0%, rgba(0, 51, 102, 0.05) 100%);
+    transform: scale(1.005);
 }
 
-/* Estilos para los badges de rol */
+/* ========================================
+   BADGES DE ROL
+   ======================================== */
 .admin-badge, .user-badge {
     display: inline-block;
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .admin-badge {
-    background-color: #e1f5fe;
-    color: #0288d1;
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    color: #0277bd;
+    border: 2px solid #81d4fa;
 }
 
 .user-badge {
-    background-color: #e0e0e0;
-    color: #616161;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    color: #424242;
+    border: 2px solid #bdbdbd;
 }
 
-/* Estilos para los botones de acción */
+/* ========================================
+   BOTONES DE ACCIÓN
+   ======================================== */
 .actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .action-link {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 2px solid transparent;
 }
 
 .edit-link {
-    background-color: rgba(46, 204, 113, 0.1);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(46, 204, 113, 0.05) 100%);
     color: #27ae60;
+    border-color: rgba(46, 204, 113, 0.3);
 }
 
 .edit-link:hover {
-    background-color: rgba(46, 204, 113, 0.2);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
 }
 
 .delete-link {
-    background-color: rgba(231, 76, 60, 0.1);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
     color: #e74c3c;
+    border-color: rgba(231, 76, 60, 0.3);
 }
 
 .delete-link:hover {
-    background-color: rgba(231, 76, 60, 0.2);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .admin-link {
-    background-color: rgba(52, 152, 219, 0.1);
-    color: #2980b9;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+    color: #3498db;
+    border-color: rgba(52, 152, 219, 0.3);
 }
 
 .admin-link:hover {
-    background-color: rgba(52, 152, 219, 0.2);
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.2) 0%, rgba(52, 152, 219, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .remove-admin-link {
-    background-color: rgba(243, 156, 18, 0.1);
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.1) 0%, rgba(243, 156, 18, 0.05) 100%);
     color: #f39c12;
+    border-color: rgba(243, 156, 18, 0.3);
 }
 
 .remove-admin-link:hover {
-    background-color: rgba(243, 156, 18, 0.2);
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2) 0%, rgba(243, 156, 18, 0.1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
-/* Estilos para mensajes de respuesta */
+/* ========================================
+   MENSAJES DE RESPUESTA
+   ======================================== */
+.error-message, .success-message {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    border-left: 6px solid;
+    position: relative;
+    overflow: hidden;
+}
+
 .error-message {
-    background-color: #f8d7da;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
     color: #721c24;
-    border: 1px solid #f5c6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border-left-color: var(--danger-color);
 }
 
 .success-message {
-    background-color: #d4edda;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border-left-color: var(--success-color);
 }
 
-/* Estilos para el footer */
-footer {
-    background-color: #003366;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Media queries para responsividad */
-@media (max-width: 992px) {
-    .container {
-        padding: 0 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    .table-container {
-        overflow-x: auto;
-    }
-    
-    .actions {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .action-link {
-        font-size: 12px;
-        padding: 5px 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    h2 {
-        font-size: 24px;
-    }
-    
-    h3 {
-        font-size: 20px;
-    }
-}
-
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Estilos para el contenedor principal */
-.container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-/* Estilos para títulos */
-h2 {
-    color: #003366;
-    margin-bottom: 25px;
-    font-weight: 700;
-    font-size: 28px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-h2::after {
+.error-message::before, .success-message::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100px;
-    height: 3px;
-    background-color: #3498db;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(10px, -10px);
 }
 
-h3 {
-    color: #003366;
-    margin: 25px 0 15px;
-    font-weight: 600;
-    font-size: 22px;
-}
-
-/* Estilos para formularios */
+/* ========================================
+   FORMULARIOS
+   ======================================== */
 .form-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-    padding: 25px;
-    margin-bottom: 30px;
+    background: linear-gradient(135deg, var(--card-bg) 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    padding: 2rem;
+    margin-bottom: 2rem;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #003366;
+    color: var(--primary-color);
+    font-size: 1rem;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    font-size: 15px;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
     transition: all 0.3s ease;
+    background-color: white;
+    box-sizing: border-box;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--info-color);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: #f8f9fa;
 }
 
 select.form-control {
     background-color: white;
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
 }
 
 .password-note {
-    font-size: 13px;
+    font-size: 0.85rem;
     color: #6c757d;
-    margin-top: 5px;
+    margin-top: 6px;
+    font-style: italic;
 }
 
-/* Estilos para botones */
+/* ========================================
+   BOTONES
+   ======================================== */
 .btn {
-    padding: 12px 22px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 15px;
+    font-size: 1rem;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
 }
 
 .btn-primary {
-    background-color: #003366;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #0051a0;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
     color: white;
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
 .actions {
     display: flex;
-    gap: 15px;
-    margin-top: 25px;
+    gap: 12px;
+    margin-top: 2rem;
 }
 
-/* Estilos para mensajes de respuesta */
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+/* ========================================
+   PROFILE STYLES
+   ======================================== */
+.profile-container {
+    background: linear-gradient(135deg, var(--card-bg) 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
 }
 
-.success-message {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
 }
 
-/* Estilos para el footer */
-footer {
-    background-color: #003366;
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--info-color) 0%, #2980b9 100%);
     color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-right: 2rem;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
-/* Media queries para responsividad */
-@media (max-width: 992px) {
+.profile-info h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.user-role {
+    color: var(--info-color);
+    font-weight: 600;
+    margin-top: 8px;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+    padding: 6px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+}
+
+.profile-details {
+    padding: 2rem;
+}
+
+.form-control-static {
+    padding: 12px 0;
+    font-size: 1rem;
+    color: #495057;
+    background-color: transparent;
+    border: none;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 15px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
     .container {
-        padding: 0 15px;
+        padding: 0 1.5rem;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .form-container, .profile-container {
+        padding: 1.5rem;
+    }
+    
+    .profile-header {
+        padding: 1.5rem;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+        margin-right: 1.5rem;
+    }
+    
+    th, td {
+        padding: 0.8rem 1rem;
     }
 }
 
+/* Mobile Large */
 @media (max-width: 768px) {
+    .container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+        margin: 1.2rem 0 0.8rem;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+    
+    th, td {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .actions {
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+    }
+    
+    .action-link {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .form-container, .profile-container {
+        padding: 1.2rem;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.2rem;
+    }
+    
+    .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+        padding: 1.2rem;
+    }
+    
     .actions {
         flex-direction: column;
         gap: 10px;
@@ -540,19 +553,129 @@ footer {
     
     .btn {
         width: 100%;
+        justify-content: center;
+    }
+    
+    .admin-badge, .user-badge {
+        font-size: 0.75rem;
+        padding: 4px 10px;
     }
 }
 
+/* Mobile Small */
 @media (max-width: 576px) {
+    .container {
+        padding: 0 0.8rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
     h2 {
-        font-size: 24px;
+        font-size: 1.4rem;
     }
     
     h3 {
-        font-size: 20px;
+        font-size: 1.1rem;
     }
     
-    .form-container {
-        padding: 15px;
+    .form-container, .profile-container {
+        padding: 1rem;
+    }
+    
+    .profile-header {
+        padding: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+    }
+    
+    .profile-info h2 {
+        font-size: 1.6rem;
+    }
+    
+    .profile-details {
+        padding: 1rem;
+    }
+    
+    .form-control {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    th, td {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .action-link {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+    
+    .error-message, .success-message {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
+    
+    .form-container, .profile-container {
+        padding: 0.8rem;
+    }
+    
+    .profile-header {
+        padding: 0.8rem;
+    }
+    
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .profile-info h2 {
+        font-size: 1.4rem;
+    }
+    
+    .user-role {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+    
+    table {
+        min-width: 500px;
+    }
+    
+    th, td {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .admin-badge, .user-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
     }
 }
