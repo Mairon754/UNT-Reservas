@@ -69,6 +69,8 @@ if (isset($_GET['id'])) {
     <title>Editar Solicitud de Mantenimiento</title>
     <link rel="stylesheet" href="../../css/pages.css">
     <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="../../js/navbar-mobile.js"></script>
     <style>
         .message {
             padding: 10px;

@@ -214,6 +214,8 @@ require_once '../navbar.php';
 <!--<link rel="stylesheet" href="../css/styles.css">-->
 <link rel="stylesheet" href="../css/pages.css">
 <link rel="stylesheet" href="css/navbar-global.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="js/navbar-mobile.js"></script>
 
 <div class="container" class="content">
     <div class="settings-container">

@@ -70,6 +70,7 @@ try {
     <link rel="stylesheet" href="css/navbar-global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../css/recursosAndReservas.css">
+    <script src="js/navbar-mobile.js"></script>
     <style>
         /* Estilos para la barra de navegación */
 

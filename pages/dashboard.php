@@ -61,9 +61,7 @@ try {
 <link rel="stylesheet" href="../css/dashboard.css">
 <link rel="stylesheet" href="css/navbar-global.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<style>
-
-</style>
+<script src="js/navbar-mobile.js"></script>
 </head>
 <body>
     <!-- Incluir la navbar existente -->
